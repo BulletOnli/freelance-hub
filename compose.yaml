@@ -9,27 +9,29 @@ services:
 
   db:
     image: postgres
+    container_name: postgres
     restart: always
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-data/postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=tests
-      # - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=
+      POSTGRES_DB: freelance_app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
     ports:
-      - 5432:5432
+      - "5432:5432"
 
   pgadmin:
     image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
     depends_on:
       - db
     ports:
       - "5050:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=root@root.com
-      - PGADMIN_DEFAULT_PASSWORD=bulletlangpostgre
-    restart: unless-stopped
-
+      - PGADMIN_DEFAULT_PASSWORD=password
+    volumes:
+      - db-data/pgadmin_data:/var/lib/pgadmin
 volumes:
-  db-data:
+  - db-data

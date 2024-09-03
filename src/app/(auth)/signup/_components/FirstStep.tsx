@@ -1,7 +1,7 @@
 "use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -9,8 +9,10 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { signUpSchema } from "@/lib/validation";
-import React from "react";
+import { profilePicSchema, signUpSchema } from "@/lib/validation";
+import { UploadButton } from "@/utils/uploadthing";
+import { Upload, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 
@@ -20,6 +22,8 @@ type Props = {
 };
 
 const FirstStep = ({ form, setCurrentStep }: Props) => {
+  const [imagePreview, setImagePreview] = useState("");
+
   const handleNextStep = async () => {
     const isValid = await form.trigger([
       "firstName",
@@ -28,6 +32,7 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
       "username",
       "password",
       "confirmPassword",
+      "profilePicture",
     ]);
 
     if (form.getValues("password") !== form.getValues("confirmPassword")) {
@@ -44,6 +49,12 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
       console.log("Validation error");
     }
   };
+
+  useEffect(() => {
+    if (form.getValues("profilePicture")) {
+      setImagePreview(form.getValues("profilePicture"));
+    }
+  }, []);
 
   return (
     <>
@@ -136,6 +147,54 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
               />
             </FormControl>
             <FormMessage className="text-xs" />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="profilePicture"
+        render={({ field }) => (
+          <FormItem className="w-full">
+            <FormControl>
+              <div className="flex items-center gap-4 my-2">
+                <div className="relative">
+                  <Avatar className="size-16 ">
+                    <AvatarImage src={imagePreview} className="object-cover" />
+                    <AvatarFallback>?</AvatarFallback>
+                  </Avatar>
+                  {imagePreview && (
+                    <Button
+                      onClick={() => {
+                        setImagePreview("");
+                        form.resetField("profilePicture");
+                      }}
+                      variant="outline"
+                      size="icon"
+                      className="size-6 absolute rounded-full -top-2 right-0 "
+                    >
+                      <X className="size-4" />
+                    </Button>
+                  )}
+                </div>
+
+                <UploadButton
+                  className="mt-4 ut-button:bg-slate-900 ut-button:ut-readying:bg-slate-900/50 "
+                  endpoint="imageUploader"
+                  onClientUploadComplete={(res) => {
+                    form.setValue("profilePicture", res[0].url);
+                    setImagePreview(res[0].url);
+                  }}
+                  onUploadError={(error: Error) => {
+                    form.setError("profilePicture", {
+                      message: "Maximum of 4MB only",
+                    });
+                  }}
+                />
+
+                <FormMessage className="text-xs" />
+              </div>
+            </FormControl>
           </FormItem>
         )}
       />

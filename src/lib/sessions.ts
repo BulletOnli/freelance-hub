@@ -1,6 +1,14 @@
-import { lucia } from "@/auth";
+import { lucia, validateRequest } from "@/auth";
 import { Session } from "lucia";
 import { cookies } from "next/headers";
+import { cache } from "react";
+
+export const getCurrentUser = cache(async () => {
+  const session = await validateRequest();
+  if (!session.user) return null;
+
+  return session.user;
+});
 
 export const createSession = async (userId: string) => {
   const session = await lucia.createSession(userId, {});

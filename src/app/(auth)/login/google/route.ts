@@ -1,4 +1,5 @@
 import { google } from "@/auth";
+import { env } from "@/env";
 import { generateCodeVerifier, generateState } from "arctic";
 import { cookies } from "next/headers";
 
@@ -12,7 +13,7 @@ export async function GET(): Promise<Response> {
 
   cookies().set("state", state, {
     path: "/",
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: "lax",
@@ -20,7 +21,7 @@ export async function GET(): Promise<Response> {
 
   cookies().set("code_verifier", codeVerifier, {
     path: "/",
-    secure: process.env.NODE_ENV === "production",
+    secure: env.NODE_ENV === "production",
     httpOnly: true,
     maxAge: 60 * 10,
     sameSite: "lax",

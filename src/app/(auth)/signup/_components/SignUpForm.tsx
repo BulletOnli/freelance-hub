@@ -8,17 +8,22 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import FirstStep from "./FirstStep";
 import SecondStep from "./SecondStep";
+import { useServerAction } from "zsa-react";
+import { signUpAction } from "../action";
 
 const SignUpForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const { isPending, execute, data, error } = useServerAction(signUpAction);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {},
   });
 
-  const onSubmit = (data: z.infer<typeof signUpSchema>) => {
-    console.log(data);
+  const onSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    const [data, err] = await execute(values);
+    console.log("Data", data);
+    console.log("Error", err);
   };
 
   return (

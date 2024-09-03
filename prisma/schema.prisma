@@ -15,14 +15,18 @@ datasource db {
 }
 
 model User {
-  id          String    @id
-  username    String    @unique
-  displayName String
-  email       String?   @unique
-  password    String?
-  googleId    String?
-  avatarUrl   String?
-  sessions    Session[]
+  id             String    @id
+  username       String    @unique
+  firstName      String
+  lastName       String
+  email          String?   @unique
+  password       String?
+  bio            String
+  specialization String[]
+  portfolio      String
+  profilePicture String? // Upload thing link
+  googleId       String?
+  sessions       Session[]
 
   createdAt DateTime @default(now())
 

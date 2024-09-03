@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import React from "react";
-import LogoutBtn from "../(auth)/_components/LogoutBtn";
+import LogoutBtn from "./(auth)/_components/LogoutBtn";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -11,7 +11,7 @@ const Homepage = async () => {
     <>
       {session.user ? (
         <div>
-          <p>Welcome: {session.user?.displayName}</p>
+          <p>Welcome: {session.user?.username}</p>
           <LogoutBtn />
         </div>
       ) : (
