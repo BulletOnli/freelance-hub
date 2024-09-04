@@ -1,5 +1,5 @@
-import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
+import { createEnv } from "@t3-oss/env-nextjs";
 
 export const env = createEnv({
   server: {
@@ -26,5 +26,4 @@ export const env = createEnv({
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
   },
-  clientPrefix: "NEXT_PUBLIC_",
 });

@@ -79,13 +79,13 @@ export const validateRequest = async (): Promise<
   return result;
 };
 
-export const google = new Google(
-  env.GOOGLE_ID!,
-  env.GOOGLE_SECRET!,
-  `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/google`
-);
+// export const google = new Google(
+//   env.GOOGLE_ID!,
+//   env.GOOGLE_SECRET!,
+//   `${env.NEXT_PUBLIC_BASE_URL}/api/auth/callback/google`
+// );
 
-export const github = new GitHub(
-  env.GITHUB_CLIENT_ID!,
-  env.GITHUB_CLIENT_SECRET!
-);
+// export const github = new GitHub(
+//   env.GITHUB_CLIENT_ID!,
+//   env.GITHUB_CLIENT_SECRET!
+// );

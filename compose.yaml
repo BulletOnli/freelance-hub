@@ -1,37 +1,54 @@
 services:
   web:
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
-    env_file: ".env"
+      args:
+        DATABASE_URL: ${DATABASE_URL}
+        GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
+        GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
+        GOOGLE_ID: ${GOOGLE_ID}
+        GOOGLE_SECRET: ${GOOGLE_SECRET}
+        UPLOADTHING_SECRET: ${UPLOADTHING_SECRET}
+        UPLOADTHING_APP_ID: ${UPLOADTHING_APP_ID}
+        NEXT_PUBLIC_BASE_URL: ${NEXT_PUBLIC_BASE_URL}
+    env_file: ".env.production"
+    environment:
+      - NODE_ENV=development
     ports:
       - 3000:3000
+    depends_on:
+      - db
 
   db:
-    image: postgres
+    image: postgres:15-alpine
     container_name: postgres
     restart: always
     volumes:
-      - db-data/postgres_data:/var/lib/postgresql/data
+      - db-data:/postgres_data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: freelance_app
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     ports:
-      - "5432:5432"
+      - 5432:5432
+    expose:
+      - 5432
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    restart: always
-    depends_on:
-      - db
-    ports:
-      - "5050:80"
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=root@root.com
-      - PGADMIN_DEFAULT_PASSWORD=password
-    volumes:
-      - db-data/pgadmin_data:/var/lib/pgadmin
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   container_name: pgadmin
+  #   restart: always
+  #   depends_on:
+  #     - db
+  #   ports:
+  #     - "5050:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+  #     PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+  #   volumes:
+  #     - db-data:/pgadmin_data:/var/lib/pgadmin
+
 volumes:
-  - db-data
+  db-data:
