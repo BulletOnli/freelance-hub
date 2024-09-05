@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import React from "react";
-import LogoutBtn from "./(auth)/_components/LogoutBtn";
+import LogoutBtn from "../components/LogoutBtn";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

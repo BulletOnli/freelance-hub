@@ -1,6 +1,7 @@
 import { lucia, validateRequest } from "@/auth";
 import { Session } from "lucia";
 import { cookies } from "next/headers";
+import { redirect, RedirectType } from "next/navigation";
 import { cache } from "react";
 
 export const getCurrentUser = cache(async () => {
@@ -31,3 +32,21 @@ export const clearSession = async (sessionId: string) => {
     sessionCookie.attributes
   );
 };
+
+export async function logoutAction(): Promise<ActionResult> {
+  "use server";
+  const { session } = await validateRequest();
+  if (!session) {
+    return {
+      error: "Unauthorized",
+    };
+  }
+
+  await clearSession(session.id);
+
+  return redirect("/login", RedirectType.replace);
+}
+
+interface ActionResult {
+  error: string | null;
+}
