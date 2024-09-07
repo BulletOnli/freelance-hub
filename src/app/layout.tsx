@@ -7,6 +7,8 @@ import { validateRequest } from "@/auth";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
+import { Toaster } from "@/components/ui/sonner";
+import Navbar from "@/components/common/Navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +29,11 @@ export default async function RootLayout({
       <body className={inter.className}>
         <GlobalProvider>
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-          <SessionProvider value={session}>{children}</SessionProvider>
+          <SessionProvider value={session}>
+            <Navbar />
+            {children}
+          </SessionProvider>
+          <Toaster />
         </GlobalProvider>
       </body>
     </html>

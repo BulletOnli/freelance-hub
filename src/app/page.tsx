@@ -11,7 +11,7 @@ const Homepage = async () => {
     <>
       {session.user ? (
         <div>
-          <p>Welcome: {session.user?.username}</p>
+          <p>Welcome: {session.user?.email}</p>
           <LogoutBtn />
         </div>
       ) : (

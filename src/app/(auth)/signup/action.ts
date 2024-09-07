@@ -5,27 +5,68 @@ import { signUpSchema } from "@/lib/validation";
 import { generateIdFromEntropySize } from "lucia";
 import prisma from "@/lib/prisma";
 import { createSession } from "@/lib/sessions";
+import argon2 from "argon2";
+
+export const checkUserDetails = createServerAction()
+  .input(
+    z.object({
+      email: z.string().email(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const { email } = input;
+
+    try {
+      const existingUser = await prisma.user.findFirst({
+        where: {
+          OR: [{ email }],
+        },
+        select: {
+          id: true,
+          email: true,
+        },
+      });
+
+      if (existingUser?.email === email) {
+        throw new Error("Email already exists");
+      }
+
+      return { message: "User details are valid" };
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        console.error("Unknown error occurred:", error);
+        throw new Error("Something went wrong");
+      }
+    }
+  });
 
 export const signUpAction = createServerAction()
   .input(signUpSchema)
   .handler(async ({ input }) => {
-    console.log("Success input", input);
     const userId = generateIdFromEntropySize(10);
 
-    await prisma.user.create({
-      data: {
-        id: userId,
-        username: input.username,
-        firstName: input.firstName,
-        lastName: input.lastName,
-        bio: input.bio,
-        portfolio: input.portfolio,
-        email: input.email,
-        password: input.password,
-        specialization: input.specialization,
-        profilePicture: input.profilePicture,
-      },
-    });
+    try {
+      const response = await prisma.user.create({
+        data: {
+          id: userId,
+          // username: input.username,
+          firstName: input.firstName,
+          lastName: input.lastName,
+          bio: input.bio,
+          portfolio: input.portfolio,
+          email: input.email,
+          password: input.password,
+          specialization: input.specialization,
+          profilePicture: input.profilePicture,
+        },
+      });
 
-    await createSession(userId);
+      console.log(response);
+      await createSession(userId);
+    } catch (error) {
+      console.log(error);
+      throw new Error("Something went wrong");
+    }
   });

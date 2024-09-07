@@ -16,7 +16,7 @@ export const profilePicSchema = z
 
 export const signUpSchema = z
   .object({
-    username: requiredString,
+    // username: requiredString,
     firstName: requiredString,
     lastName: requiredString,
     email: requiredString.email(),

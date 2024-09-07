@@ -15,6 +15,8 @@ import { Upload, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
+import { useServerAction } from "zsa-react";
+import { checkUserDetails } from "../action";
 
 type Props = {
   form: UseFormReturn<z.infer<typeof signUpSchema>>;
@@ -23,13 +25,26 @@ type Props = {
 
 const FirstStep = ({ form, setCurrentStep }: Props) => {
   const [imagePreview, setImagePreview] = useState("");
+  const checkUserDetailAction = useServerAction(checkUserDetails);
 
   const handleNextStep = async () => {
+    const [email] = form.getValues(["email"]);
+
+    const [data, err] = await checkUserDetailAction.execute({
+      email,
+    });
+
+    if (err) {
+      form.setError("email", {
+        message: "Email already taken",
+      });
+      return;
+    }
+
     const isValid = await form.trigger([
       "firstName",
       "lastName",
       "email",
-      "username",
       "password",
       "confirmPassword",
       "profilePicture",
@@ -101,7 +116,7 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
         )}
       />
 
-      <FormField
+      {/* <FormField
         control={form.control}
         name="username"
         render={({ field }) => (
@@ -113,7 +128,7 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
             <FormMessage className="text-xs" />
           </FormItem>
         )}
-      />
+      /> */}
 
       <FormField
         control={form.control}
@@ -199,7 +214,12 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
         )}
       />
 
-      <Button type="button" onClick={handleNextStep} className="w-full">
+      <Button
+        type="button"
+        disabled={checkUserDetailAction.isPending}
+        onClick={handleNextStep}
+        className="w-full"
+      >
         Next Step
       </Button>
     </>
