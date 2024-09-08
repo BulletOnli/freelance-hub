@@ -6,6 +6,7 @@ import { generateIdFromEntropySize } from "lucia";
 import prisma from "@/lib/prisma";
 import { createSession } from "@/lib/sessions";
 import argon2 from "argon2";
+import { createUser, isEmailAlreadyTaken } from "@/data-access/users";
 
 export const checkUserDetails = createServerAction()
   .input(
@@ -17,15 +18,7 @@ export const checkUserDetails = createServerAction()
     const { email } = input;
 
     try {
-      const existingUser = await prisma.user.findFirst({
-        where: {
-          OR: [{ email }],
-        },
-        select: {
-          id: true,
-          email: true,
-        },
-      });
+      const existingUser = await isEmailAlreadyTaken(email);
 
       if (existingUser?.email === email) {
         throw new Error("Email already exists");
@@ -48,22 +41,18 @@ export const signUpAction = createServerAction()
     const userId = generateIdFromEntropySize(10);
 
     try {
-      const response = await prisma.user.create({
-        data: {
-          id: userId,
-          // username: input.username,
-          firstName: input.firstName,
-          lastName: input.lastName,
-          bio: input.bio,
-          portfolio: input.portfolio,
-          email: input.email,
-          password: input.password,
-          specialization: input.specialization,
-          profilePicture: input.profilePicture,
-        },
+      const hashedPassword = await argon2.hash(input.password, {
+        type: argon2.argon2id,
+        memoryCost: 2 ** 16,
+        hashLength: 50,
       });
 
-      console.log(response);
+      await createUser({
+        ...input,
+        id: userId,
+        password: hashedPassword,
+      });
+
       await createSession(userId);
     } catch (error) {
       console.log(error);

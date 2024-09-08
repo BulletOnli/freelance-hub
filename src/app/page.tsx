@@ -1,26 +1,27 @@
-import { validateRequest } from "@/auth";
 import React from "react";
-import LogoutBtn from "../components/LogoutBtn";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { getCurrentUser } from "@/lib/sessions";
+import { redirect } from "next/navigation";
 
 const Homepage = async () => {
-  const session = await validateRequest();
+  const user = await getCurrentUser();
 
-  return (
-    <>
-      {session.user ? (
-        <div>
-          <p>Welcome: {session.user?.email}</p>
-          <LogoutBtn />
-        </div>
-      ) : (
-        <Button asChild>
-          <Link href="/login">Login</Link>
-        </Button>
-      )}
-    </>
-  );
+  if (user) redirect(`/profile/${user.id}`);
+
+  // return (
+  //   <>
+  //     {user ? (
+  //       <div>
+  //         <p>Welcome: {user?.email}</p>
+  //       </div>
+  //     ) : (
+  //       <Button asChild>
+  //         <Link href="/login">Login</Link>
+  //       </Button>
+  //     )}
+  //   </>
+  // );
 };
 
 export default Homepage;

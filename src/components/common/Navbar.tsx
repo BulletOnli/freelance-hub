@@ -1,13 +1,16 @@
 import React from "react";
 import ProfileDropDown from "../ProfileDropDown";
+import { getCurrentUser } from "@/lib/sessions";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const user = await getCurrentUser();
+
   return (
-    <div className="w-full py-4 text-white bg-[#24292F]">
+    <div className="sticky top-0 w-full py-4 text-white bg-customDark">
       <div className="container mx-auto flex items-center justify-between">
         <div>sdf</div>
 
-        <ProfileDropDown />
+        <ProfileDropDown user={user} />
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { validateRequest } from "@/auth";
+import { getCurrentUser } from "@/lib/sessions";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -7,7 +7,7 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = await validateRequest();
+  const user = await getCurrentUser();
 
   if (user) redirect("/");
 
