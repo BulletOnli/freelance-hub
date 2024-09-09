@@ -51,14 +51,16 @@ const UserProfilePage = async ({ params }: Props) => {
                   Specialization:
                 </p>
                 <div className="flex select-none text-xs flex-wrap items-center gap-2">
-                  {data?.specialization?.slice(0, 3)?.map((skill) => (
-                    <p
-                      key={skill}
-                      className="px-4 py-[2px] border border-customGray rounded-full"
-                    >
-                      {skill}
-                    </p>
-                  ))}
+                  {data?.userDetails?.specialization
+                    ?.slice(0, 3)
+                    ?.map((skill) => (
+                      <p
+                        key={skill}
+                        className="px-4 py-[2px] border border-customGray rounded-full"
+                      >
+                        {skill}
+                      </p>
+                    ))}
                 </div>
               </div>
             </div>
@@ -90,13 +92,13 @@ const UserProfilePage = async ({ params }: Props) => {
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-lg">About me</p>
-            <p className="text-customGray">{data?.bio}</p>
+            <p className="text-customGray">{data?.userDetails?.bio}</p>
           </div>
 
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-lg">Skills</p>
             <div className="flex  text-sm flex-wrap items-center gap-2">
-              {data?.specialization?.slice(0, 3)?.map((skill) => (
+              {data?.userDetails?.specialization?.slice(0, 3)?.map((skill) => (
                 <p
                   key={skill}
                   className="px-4 py-1 border border-customGray rounded-full"

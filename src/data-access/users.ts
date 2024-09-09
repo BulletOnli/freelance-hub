@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { UserRole } from "@prisma/client";
 import argon2 from "argon2";
 
 export const validateLogin = async ({
@@ -43,7 +44,7 @@ export const isEmailAlreadyTaken = async (email: string) => {
   });
 };
 
-export const createUser = async (input: {
+export const createFreelancerUser = async (input: {
   id: string;
   firstName: string;
   lastName: string;
@@ -54,18 +55,45 @@ export const createUser = async (input: {
   specialization: string[];
   profilePicture: string;
 }) => {
+  const user = await prisma.user.create({
+    data: {
+      id: input.id,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      email: input.email,
+      password: input.password,
+      profilePicture: input.profilePicture,
+      role: "FREELANCER",
+    },
+  });
+
+  await prisma.userDetails.create({
+    data: {
+      userId: user.id,
+      bio: input.bio,
+      portfolio: input.portfolio,
+      specialization: input.specialization,
+    },
+  });
+};
+
+export const createClientUser = async (input: {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  profilePicture: string;
+}) => {
   await prisma.user.create({
     data: {
       id: input.id,
-      // username: input.username,
       firstName: input.firstName,
       lastName: input.lastName,
-      bio: input.bio,
-      portfolio: input.portfolio,
       email: input.email,
       password: input.password,
-      specialization: input.specialization,
       profilePicture: input.profilePicture,
+      role: "CLIENT",
     },
   });
 };
@@ -73,5 +101,11 @@ export const createUser = async (input: {
 export const getUserDetails = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id },
+    omit: {
+      password: true,
+    },
+    include: {
+      userDetails: true,
+    },
   });
 };

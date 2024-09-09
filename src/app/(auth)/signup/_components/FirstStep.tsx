@@ -9,7 +9,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { profilePicSchema, signUpSchema } from "@/lib/validation";
+import { profilePicSchema, studentSignUpSchema } from "@/lib/validation";
 import { UploadButton } from "@/utils/uploadthing";
 import { Upload, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -17,29 +17,21 @@ import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { useServerAction } from "zsa-react";
 import { checkUserDetails } from "../action";
+import { UserRole } from "@prisma/client";
 
 type Props = {
-  form: UseFormReturn<z.infer<typeof signUpSchema>>;
+  form: UseFormReturn<z.infer<typeof studentSignUpSchema>>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
+  role: UserRole;
 };
 
-const FirstStep = ({ form, setCurrentStep }: Props) => {
+const FirstStep = ({ form, setCurrentStep, role }: Props) => {
   const [imagePreview, setImagePreview] = useState("");
   const checkUserDetailAction = useServerAction(checkUserDetails);
+  const isClient = role === "CLIENT";
 
   const handleNextStep = async () => {
     const [email] = form.getValues(["email"]);
-
-    const [data, err] = await checkUserDetailAction.execute({
-      email,
-    });
-
-    if (err) {
-      form.setError("email", {
-        message: "Email already taken",
-      });
-      return;
-    }
 
     const isValid = await form.trigger([
       "firstName",
@@ -59,6 +51,16 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
     }
 
     if (isValid) {
+      const [data, err] = await checkUserDetailAction.execute({
+        email,
+      });
+
+      if (err) {
+        form.setError("email", {
+          message: "Email already taken",
+        });
+        return;
+      }
       setCurrentStep(2);
     } else {
       console.log("Validation error");
@@ -214,14 +216,20 @@ const FirstStep = ({ form, setCurrentStep }: Props) => {
         )}
       />
 
-      <Button
-        type="button"
-        disabled={checkUserDetailAction.isPending}
-        onClick={handleNextStep}
-        className="w-full"
-      >
-        Next Step
-      </Button>
+      {role === "CLIENT" ? (
+        <Button type="submit" className="w-full">
+          Sign Up
+        </Button>
+      ) : (
+        <Button
+          type="button"
+          disabled={checkUserDetailAction.isPending}
+          onClick={handleNextStep}
+          className="w-full"
+        >
+          Next Step
+        </Button>
+      )}
     </>
   );
 };

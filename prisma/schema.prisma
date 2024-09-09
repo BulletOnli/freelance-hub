@@ -6,7 +6,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearch", "omitApi"]
 }
 
 datasource db {
@@ -15,23 +15,39 @@ datasource db {
   // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+enum UserRole {
+  ADMIN
+  CLIENT
+  FREELANCER
+}
+
 model User {
-  id             String    @id
-  // username       String    @unique
+  id             String       @id
   firstName      String
   lastName       String
-  email          String?   @unique
+  email          String?      @unique
   password       String?
-  bio            String
-  specialization String[]
-  portfolio      String
   profilePicture String? // Upload thing link
   googleId       String?
+  role           UserRole
   sessions       Session[]
+  userDetails    UserDetails?
 
   createdAt DateTime @default(now())
 
   @@map("users")
+}
+
+model UserDetails {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  bio            String
+  specialization String[]
+  portfolio      String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user-details")
 }
 
 model Session {

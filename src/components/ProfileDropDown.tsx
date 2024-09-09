@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,6 +26,7 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Avatar>
+            <AvatarImage src={user?.profilePicture || undefined} />
             <AvatarFallback className="border border-customOrange text-darkGray font-semibold">
               {user?.email?.[0]?.toUpperCase()}
             </AvatarFallback>
@@ -33,11 +34,12 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="flex flex-col gap-4 p-4 min-w-[300px]">
           <div className="flex items-center gap-2">
-            <Avatar className="size-10">
+            {/* <Avatar className="size-10">
+              <AvatarImage src={user?.profilePicture || undefined} />
               <AvatarFallback className="border border-customOrange text-darkGray font-semibold">
                 {user?.email?.[0]?.toUpperCase()}
               </AvatarFallback>
-            </Avatar>
+            </Avatar> */}
             <div>
               <p className="text-darkGray font-semibold">{user?.email}</p>
             </div>

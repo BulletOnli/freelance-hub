@@ -12,12 +12,11 @@ import React from "react";
 import { Textarea } from "@/components/ui/textarea";
 import InputTags from "@/components/InputTags";
 import { UseFormReturn } from "react-hook-form";
-import { signUpSchema } from "@/lib/validation";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { SignUpFormSchema } from "./SignUpForm";
 
 type Props = {
-  form: UseFormReturn<z.infer<typeof signUpSchema>>;
+  form: UseFormReturn<SignUpFormSchema>;
   setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
 };
 

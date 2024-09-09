@@ -1,10 +1,14 @@
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import { Lucia, Session, User } from "lucia";
+import { Lucia, Session, User as LuciaUser } from "lucia";
 import prisma from "./lib/prisma";
 import { cache } from "react";
 import { cookies } from "next/headers";
 import { GitHub, Google } from "arctic";
 import { env } from "./env";
+import {
+  User as PrismaUser,
+  UserDetails as PrismaUserDetails,
+} from "@prisma/client";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
@@ -21,9 +25,11 @@ export const lucia = new Lucia(adapter, {
   getUserAttributes(databaseUserAttributes) {
     return {
       id: databaseUserAttributes.id,
-      // username: databaseUserAttributes.username,
+      firstName: databaseUserAttributes.firstName,
+      lastName: databaseUserAttributes.lastName,
       email: databaseUserAttributes.email,
-      googleId: databaseUserAttributes.googleId,
+      profilePicture: databaseUserAttributes.profilePicture,
+      role: databaseUserAttributes.role,
     };
   },
 });
@@ -35,15 +41,10 @@ declare module "lucia" {
   }
 }
 
-interface DatabaseUserAttributes {
-  id: string;
-  // username: string;
-  email: string;
-  googleId: string;
-}
+type DatabaseUserAttributes = PrismaUser & PrismaUserDetails;
 
 export const validateRequest = async (): Promise<
-  { user: User; session: Session } | { user: null; session: null }
+  { user: LuciaUser; session: Session } | { user: null; session: null }
 > => {
   const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
 
