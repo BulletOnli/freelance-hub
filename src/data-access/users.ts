@@ -1,6 +1,21 @@
 import prisma from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import argon2 from "argon2";
+import { createInstantWallet } from "./wallet";
+
+export const getLoggedInUser = async (userId: string) => {
+  return await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    omit: {
+      password: true,
+    },
+    include: {
+      wallet: true,
+    },
+  });
+};
 
 export const validateLogin = async ({
   email,
@@ -75,6 +90,8 @@ export const createFreelancerUser = async (input: {
       specialization: input.specialization,
     },
   });
+
+  await createInstantWallet(user.id);
 };
 
 export const createClientUser = async (input: {
@@ -85,7 +102,7 @@ export const createClientUser = async (input: {
   password: string;
   profilePicture: string;
 }) => {
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       id: input.id,
       firstName: input.firstName,
@@ -96,6 +113,8 @@ export const createClientUser = async (input: {
       role: "CLIENT",
     },
   });
+
+  await createInstantWallet(user.id);
 };
 
 export const getUserDetails = async (id: string) => {

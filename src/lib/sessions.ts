@@ -3,12 +3,14 @@ import { Session } from "lucia";
 import { cookies } from "next/headers";
 import { redirect, RedirectType } from "next/navigation";
 import { cache } from "react";
+import { getLoggedInUser } from "@/data-access/users";
 
 export const getCurrentUser = cache(async () => {
   const session = await validateRequest();
   if (!session.user) return null;
 
-  return session.user;
+  const user = await getLoggedInUser(session.user.id);
+  return user;
 });
 
 export const createSession = async (userId: string) => {

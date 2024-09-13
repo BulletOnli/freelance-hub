@@ -32,6 +32,7 @@ model User {
   role           UserRole
   sessions       Session[]
   userDetails    UserDetails?
+  wallet         Wallet?
 
   createdAt DateTime @default(now())
 
@@ -45,7 +46,7 @@ model UserDetails {
   specialization String[]
   portfolio      String
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user-details")
 }
@@ -58,4 +59,39 @@ model Session {
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model Wallet {
+  id                 String              @id @default(uuid())
+  userId             String              @unique
+  balance            Float               @default(5000)
+  walletTransactions WalletTransaction[]
+
+  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id       String                    @id @default(uuid())
+  walletId String
+  type     WALLET_TRANSACTION_TYPE
+  amount   Float
+  status   WALLET_TRANSACTION_STATUS @default(PENDING)
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@map("wallet-transactions")
+}
+
+enum WALLET_TRANSACTION_TYPE {
+  CASH_OUT
+  CASH_IN
+  PAY_BILLS
+}
+
+enum WALLET_TRANSACTION_STATUS {
+  PENDING
+  SUCCESS
+  FAILED
 }

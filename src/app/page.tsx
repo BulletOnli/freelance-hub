@@ -7,8 +7,9 @@ import { redirect } from "next/navigation";
 const Homepage = async () => {
   const user = await getCurrentUser();
 
-  if (user) redirect(`/profile/${user.id}`);
+  if (user && user.role === "FREELANCER") redirect(`/profile/${user.id}`);
 
+  return <h1>hi</h1>;
   // return (
   //   <>
   //     {user ? (

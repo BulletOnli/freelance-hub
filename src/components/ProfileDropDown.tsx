@@ -10,7 +10,7 @@ import {
 import { HandCoins, History, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { logoutAction } from "@/lib/sessions";
-import { User } from "lucia";
+import { User } from "@/types";
 
 const ProfileDropDown = ({ user }: { user: User | null }) => {
   if (!user) {
@@ -49,7 +49,9 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
               <div className="flex items-center gap-2">
                 <p className="font-medium">Available Coins</p>
               </div>
-              <p className="my-2 text-2xl text-[#F2BC1A] font-bold">₱ 0</p>
+              <p className="my-2 text-2xl text-customDark font-bold">
+                ₱ {user.wallet.balance}
+              </p>
             </div>
 
             <div className="w-full flex items-center justify-center border-t border-lightBorder ">

@@ -3,10 +3,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/sessions";
 import { BadgeCheck, Mail, MapPin, Menu, Phone, Star } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import React from "react";
 import { getUserDetailsAction } from "./action";
 import Error from "@/app/error";
+import Link from "next/link";
+import NotFound from "@/app/not-found";
 
 type Props = {
   params: { userId: string };
@@ -15,9 +17,12 @@ type Props = {
 const UserProfilePage = async ({ params }: Props) => {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (user.role === "CLIENT" && user.id === params.userId)
+    redirect("/", RedirectType.replace);
 
   const [data, err] = await getUserDetailsAction({ id: params.userId });
 
+  if (!data) return <NotFound />;
   if (err) return <Error />;
 
   return (
@@ -45,6 +50,17 @@ const UserProfilePage = async ({ params }: Props) => {
                   Verified
                 </Badge>
               </div>
+
+              <p className="text-sm text-customGray font-medium">
+                Portfolio:{" "}
+                <Link
+                  href={data?.userDetails?.portfolio || "#"}
+                  target="_blank"
+                  className="hover:underline font-normal"
+                >
+                  {data?.userDetails?.portfolio}
+                </Link>
+              </p>
 
               <div className="flex flex-col gap-2">
                 <p className="text-sm text-customGray font-medium">

@@ -8,6 +8,7 @@ import { env } from "./env";
 import {
   User as PrismaUser,
   UserDetails as PrismaUserDetails,
+  Wallet,
 } from "@prisma/client";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
@@ -16,7 +17,7 @@ export const lucia = new Lucia(adapter, {
   sessionCookie: {
     // this sets cookies with super long expiration
     // since Next.js doesn't allow Lucia to extend cookie expiration when rendering pages
-    expires: false,
+    // expires: false,
     attributes: {
       // set to `true` when using HTTPS
       secure: env.NODE_ENV === "production",
@@ -41,7 +42,7 @@ declare module "lucia" {
   }
 }
 
-type DatabaseUserAttributes = PrismaUser & PrismaUserDetails;
+type DatabaseUserAttributes = PrismaUser;
 
 export const validateRequest = async (): Promise<
   { user: LuciaUser; session: Session } | { user: null; session: null }
