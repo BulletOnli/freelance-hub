@@ -5,11 +5,7 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { GitHub, Google } from "arctic";
 import { env } from "./env";
-import {
-  User as PrismaUser,
-  UserDetails as PrismaUserDetails,
-  Wallet,
-} from "@prisma/client";
+import { User as PrismaUser } from "@prisma/client";
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user);
 

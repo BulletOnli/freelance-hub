@@ -42,7 +42,8 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       colors: {
-        customDark: "#1F2328",
+        customDark: "#020617", // bg-slate-900
+        // customDark: "#1F2328",
         customSemiDark: "#24292F",
         customLightGray: "#989898",
         customGray: "#5D5D5D",

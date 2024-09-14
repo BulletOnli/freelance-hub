@@ -3,45 +3,59 @@ import { Button } from "@/components/ui/button";
 import { BriefcaseBusiness, Mail, Send } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import { format, formatDistanceToNow } from "date-fns";
+import { Gig, User } from "@prisma/client";
 
-const GigCard = () => {
+type Props = {
+  gig: Gig & {
+    user: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string | null;
+      profilePicture: string | null;
+    };
+  };
+};
+
+const GigCard = ({ gig }: Props) => {
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={undefined} />
-          <AvatarFallback className="border border-customOrange text-darkGray font-semibold">
-            A
+          <AvatarImage src={gig?.user?.profilePicture || undefined} />
+          <AvatarFallback className="uppercase border border-customOrange text-darkGray font-semibold">
+            {gig?.user?.firstName[0]}
           </AvatarFallback>
         </Avatar>
         <div>
-          <Link
-            href={`/profile/1`}
-            className="hover:underline text-sm font-semibold text-customDark"
-          >
-            <p>Colet Vergara</p>
-          </Link>
-          <p className="text-xs">2 minutes ago</p>
+          <p className="text-sm font-semibold text-customDark">
+            {gig?.user?.firstName} {gig?.user?.lastName}
+          </p>
+          <p className="text-xs">
+            {formatDistanceToNow(gig?.createdAt, { addSuffix: true })}
+          </p>
         </div>
       </div>
 
-      <Link href={`/gigs/1`}>
+      <Link href={`/gigs/${gig?.id}`}>
         <div className="space-y-2">
-          <p className="font-semibold text-customDark">
-            Lorem ipsum dolor sit amet consectetur. Nibh risus nec velit et.
-            Morbi at in a tortor arcu eu.
-          </p>
+          <p className="font-semibold text-customDark">{gig?.title}</p>
 
-          <p className="text-sm text-customSemiDark">
-            Lorem ipsum dolor sit amet consectetur. Diam quam id amet amet leo
-            et. Bibendum et habitasse vulputate quam pellentesque. Pharetra
-            adipiscing lectus purus ornare porta sagittis quam nunc aliquam. Sit
-            porta pretium sagittis elit magna diam blandit elit bibendum. Amet
-            lectus nisi amet mattis imperdiet imperdiet porttitor scelerisque.
-            Morbi sit.
-          </p>
+          <p className="text-sm text-customSemiDark">{gig?.description}</p>
         </div>
       </Link>
+
+      <div>
+        <div className="text-sm flex items-center gap-1">
+          <p className="font-medium ">Budget: </p>
+          <p>P{gig?.budget}</p>
+        </div>
+        <div className="text-sm flex items-center gap-1">
+          <p className="font-medium ">Deadline: </p>
+          <p>{format(new Date(gig?.deadline), "MMMM dd, y")}</p>
+        </div>
+      </div>
 
       <div className="flex flex-wrap items-center gap-2 ">
         <Button className="rounded-full px-4" size="sm">

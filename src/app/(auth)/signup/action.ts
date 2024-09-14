@@ -12,7 +12,7 @@ import {
   isEmailAlreadyTaken,
 } from "@/data-access/users";
 
-export const checkUserDetails = createServerAction()
+export const checkUserProfile = createServerAction()
   .input(
     z.object({
       email: z.string().email(),

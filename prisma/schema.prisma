@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "omitApi"]
@@ -15,31 +12,64 @@ datasource db {
   // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
+// ENUMS
 enum UserRole {
   ADMIN
   CLIENT
   FREELANCER
 }
 
+enum WALLET_TRANSACTION_TYPE {
+  CASH_OUT
+  CASH_IN
+  PAY_BILLS
+}
+
+enum WALLET_TRANSACTION_STATUS {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum GIG_STATUS {
+  AVAILABLE
+  ONGOING
+  DONE
+}
+
+enum GIG_CONTRACT_STATUS {
+  PENDING
+  ONGOING
+  DONE
+  CANCELED
+}
+
+// MODELS
+
 model User {
-  id             String       @id
-  firstName      String
-  lastName       String
-  email          String?      @unique
-  password       String?
-  profilePicture String? // Upload thing link
-  googleId       String?
-  role           UserRole
-  sessions       Session[]
-  userDetails    UserDetails?
-  wallet         Wallet?
+  id                  String        @id
+  firstName           String
+  lastName            String
+  email               String?       @unique
+  password            String?
+  profilePicture      String? // Upload thing link
+  googleId            String?
+  role                UserRole
+  sessions            Session[]
+  profile             UserProfile?
+  wallet              Wallet?
+  gigs                Gig[]
+  clientContracts     GigContract[] @relation(name: "ClientContracts")
+  freelancerContracts GigContract[] @relation(name: "FreelancerContracts")
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  @@index([email])
   @@map("users")
 }
 
-model UserDetails {
+model UserProfile {
   id             String   @id @default(uuid())
   userId         String   @unique
   bio            String
@@ -48,7 +78,7 @@ model UserDetails {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("user-details")
+  @@map("user-profile")
 }
 
 model Session {
@@ -64,7 +94,7 @@ model Session {
 model Wallet {
   id                 String              @id @default(uuid())
   userId             String              @unique
-  balance            Float               @default(5000)
+  balance            Float               @default(0)
   walletTransactions WalletTransaction[]
 
   user User @relation(references: [id], fields: [userId], onDelete: Cascade)
@@ -73,25 +103,52 @@ model Wallet {
 }
 
 model WalletTransaction {
-  id       String                    @id @default(uuid())
-  walletId String
-  type     WALLET_TRANSACTION_TYPE
-  amount   Float
-  status   WALLET_TRANSACTION_STATUS @default(PENDING)
+  id        String                    @id @default(uuid())
+  walletId  String
+  type      WALLET_TRANSACTION_TYPE
+  amount    Float
+  status    WALLET_TRANSACTION_STATUS @default(PENDING)
+  createdAt DateTime                  @default(now())
+  updatedAt DateTime                  @updatedAt
 
   wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
 
   @@map("wallet-transactions")
 }
 
-enum WALLET_TRANSACTION_TYPE {
-  CASH_OUT
-  CASH_IN
-  PAY_BILLS
+model Gig {
+  id          String       @id @default(uuid())
+  userId      String // The one who created the GIG
+  title       String
+  description String
+  budget      Float
+  files       String[]
+  status      GIG_STATUS   @default(AVAILABLE)
+  contract    GigContract?
+  deadline    DateTime
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("gigs")
 }
 
-enum WALLET_TRANSACTION_STATUS {
-  PENDING
-  SUCCESS
-  FAILED
+model GigContract {
+  id           String              @id @default(uuid())
+  gigId        String              @unique
+  freelancerId String
+  clientId     String
+  status       GIG_CONTRACT_STATUS @default(PENDING)
+  price        Float
+  startDate    DateTime? // When the Contract is accepted (status = "ONGOING")
+  endDate      DateTime? // Deadline
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  gig        Gig  @relation(fields: [gigId], references: [id])
+  freelancer User @relation(name: "FreelancerContracts", fields: [freelancerId], references: [id])
+  client     User @relation(name: "ClientContracts", fields: [clientId], references: [id])
+
+  @@map("gig-contracts")
 }

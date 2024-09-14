@@ -5,7 +5,7 @@ import { getCurrentUser } from "@/lib/sessions";
 import { BadgeCheck, Mail, MapPin, Menu, Phone, Star } from "lucide-react";
 import { redirect, RedirectType } from "next/navigation";
 import React from "react";
-import { getUserDetailsAction } from "./action";
+import { getUserProfileAction } from "./action";
 import Error from "@/app/error";
 import Link from "next/link";
 import NotFound from "@/app/not-found";
@@ -20,10 +20,12 @@ const UserProfilePage = async ({ params }: Props) => {
   if (user.role === "CLIENT" && user.id === params.userId)
     redirect("/", RedirectType.replace);
 
-  const [data, err] = await getUserDetailsAction({ id: params.userId });
+  const [data, err] = await getUserProfileAction({ id: params.userId });
 
   if (!data) return <NotFound />;
   if (err) return <Error />;
+
+  if (data.role === "CLIENT") redirect("/", RedirectType.replace);
 
   return (
     <div className="container mx-auto p-10 flex items-center">
@@ -54,11 +56,11 @@ const UserProfilePage = async ({ params }: Props) => {
               <p className="text-sm text-customGray font-medium">
                 Portfolio:{" "}
                 <Link
-                  href={data?.userDetails?.portfolio || "#"}
+                  href={data?.profile?.portfolio || "#"}
                   target="_blank"
                   className="hover:underline font-normal"
                 >
-                  {data?.userDetails?.portfolio}
+                  {data?.profile?.portfolio}
                 </Link>
               </p>
 
@@ -67,16 +69,14 @@ const UserProfilePage = async ({ params }: Props) => {
                   Specialization:
                 </p>
                 <div className="flex select-none text-xs flex-wrap items-center gap-2">
-                  {data?.userDetails?.specialization
-                    ?.slice(0, 3)
-                    ?.map((skill) => (
-                      <p
-                        key={skill}
-                        className="px-4 py-[2px] border border-customGray rounded-full"
-                      >
-                        {skill}
-                      </p>
-                    ))}
+                  {data?.profile?.specialization?.slice(0, 3)?.map((skill) => (
+                    <p
+                      key={skill}
+                      className="px-4 py-[2px] border border-customGray rounded-full"
+                    >
+                      {skill}
+                    </p>
+                  ))}
                 </div>
               </div>
             </div>
@@ -108,13 +108,13 @@ const UserProfilePage = async ({ params }: Props) => {
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-lg">About me</p>
-            <p className="text-customGray">{data?.userDetails?.bio}</p>
+            <p className="text-customGray">{data?.profile?.bio}</p>
           </div>
 
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-lg">Skills</p>
             <div className="flex  text-sm flex-wrap items-center gap-2">
-              {data?.userDetails?.specialization?.slice(0, 3)?.map((skill) => (
+              {data?.profile?.specialization?.slice(0, 3)?.map((skill) => (
                 <p
                   key={skill}
                   className="px-4 py-1 border border-customGray rounded-full"

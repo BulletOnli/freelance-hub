@@ -32,7 +32,7 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="flex flex-col gap-4 p-4 min-w-[300px]">
+        <DropdownMenuContent className="relative z-[99] flex flex-col gap-4 p-4 min-w-[300px]">
           <div className="flex items-center gap-2">
             {/* <Avatar className="size-10">
               <AvatarImage src={user?.profilePicture || undefined} />
@@ -41,7 +41,10 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
               </AvatarFallback>
             </Avatar> */}
             <div>
-              <p className="text-darkGray font-semibold">{user?.email}</p>
+              <p className="text-darkGray font-semibold">
+                {user?.firstName} {user?.lastName}
+              </p>
+              <p className="text-xs">{user?.email}</p>
             </div>
           </div>
           <div className="w-full flex flex-col border border-lightBorder rounded-lg">

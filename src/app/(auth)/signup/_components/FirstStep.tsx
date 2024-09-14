@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { useServerAction } from "zsa-react";
-import { checkUserDetails } from "../action";
+import { checkUserProfile } from "../action";
 import { UserRole } from "@prisma/client";
 
 type Props = {
@@ -27,7 +27,7 @@ type Props = {
 
 const FirstStep = ({ form, setCurrentStep, role }: Props) => {
   const [imagePreview, setImagePreview] = useState("");
-  const checkUserDetailAction = useServerAction(checkUserDetails);
+  const checkUserDetailAction = useServerAction(checkUserProfile);
   const isClient = role === "CLIENT";
 
   const handleNextStep = async () => {

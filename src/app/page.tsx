@@ -7,22 +7,8 @@ import { redirect } from "next/navigation";
 const Homepage = async () => {
   const user = await getCurrentUser();
 
-  if (user && user.role === "FREELANCER") redirect(`/profile/${user.id}`);
-
-  return <h1>hi</h1>;
-  // return (
-  //   <>
-  //     {user ? (
-  //       <div>
-  //         <p>Welcome: {user?.email}</p>
-  //       </div>
-  //     ) : (
-  //       <Button asChild>
-  //         <Link href="/login">Login</Link>
-  //       </Button>
-  //     )}
-  //   </>
-  // );
+  redirect("/gigs");
+  if (user && user?.role === "FREELANCER") redirect(`/profile/${user?.id}`);
 };
 
 export default Homepage;

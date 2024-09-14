@@ -82,7 +82,7 @@ export const createFreelancerUser = async (input: {
     },
   });
 
-  await prisma.userDetails.create({
+  await prisma.userProfile.create({
     data: {
       userId: user.id,
       bio: input.bio,
@@ -117,14 +117,14 @@ export const createClientUser = async (input: {
   await createInstantWallet(user.id);
 };
 
-export const getUserDetails = async (id: string) => {
+export const getUserProfile = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id },
     omit: {
       password: true,
     },
     include: {
-      userDetails: true,
+      profile: true,
     },
   });
 };

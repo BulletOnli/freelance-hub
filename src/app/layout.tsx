@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import GlobalProvider from "@/context/GlobalProvider";
-import SessionProvider from "@/context/SessionProvider";
+import GlobalProvider from "@/providers/GlobalProvider";
+import SessionProvider from "@/providers/SessionProvider";
 import { validateRequest } from "@/auth";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";

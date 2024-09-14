@@ -48,3 +48,26 @@ export const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Minimum of 8 characters is required"),
 });
+
+export const createGigSchema = z.object({
+  title: z
+    .string()
+    .min(1, "Title is required")
+    .max(100, "Title must be 100 characters or less"),
+  description: z
+    .string()
+    .min(1, "Description is required")
+    .max(500, "Description must be 500 characters or less"),
+  budget: z
+    .number()
+    .min(50, "Budget is required")
+    .refine((val) => !isNaN(val), {
+      message: "Budget must be a valid number",
+    }),
+  deadline: z
+    .string()
+    .min(1, "Deadline is required")
+    .refine((val) => !isNaN(Date.parse(val)), {
+      message: "Deadline must be a valid date",
+    }),
+});
