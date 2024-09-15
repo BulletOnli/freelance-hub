@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/sessions";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import CreateGigModal from "./_components/CreateGigModal";
-import { getAllGigs } from "@/data-access/gig";
+import { getAllGigs } from "@/data-access/gigs";
 
 const GigsPage = async () => {
   const user = await getCurrentUser();
@@ -21,7 +21,8 @@ const GigsPage = async () => {
           <Button disabled variant="outline" className="w-full rounded-full">
             Unknown
           </Button>
-          <CreateGigModal />
+          {user.role === "CLIENT" && <CreateGigModal />}
+
           <Button disabled variant="outline" className="w-full rounded-full">
             Unknown
           </Button>

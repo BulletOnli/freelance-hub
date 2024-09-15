@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/form";
 import { useServerAction } from "zsa-react";
 import { createGigAction } from "../action";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 type FormValues = z.infer<typeof createGigSchema>;
 
@@ -31,6 +32,7 @@ export default function CreateGigModal() {
   const { isPending, execute } = useServerAction(createGigAction);
 
   const form = useForm<FormValues>({
+    resolver: zodResolver(createGigSchema),
     defaultValues: {
       title: "",
       description: "",
@@ -40,12 +42,9 @@ export default function CreateGigModal() {
   });
 
   const onSubmit = async (values: FormValues) => {
-    const [data, err] = await execute({
-      ...values,
-      budget: Number(values.budget),
-    });
-    console.log("data", data);
-    console.log("err", err?.fieldErrors);
+    const [data, err] = await execute(values);
+    // console.log("data", data);
+    // console.log("err", err?.fieldErrors);
 
     if (data && !err) {
       setOpen(false);
@@ -104,6 +103,7 @@ export default function CreateGigModal() {
                       type="number"
                       placeholder="Enter budget"
                       {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
                       required
                     />
                   </FormControl>

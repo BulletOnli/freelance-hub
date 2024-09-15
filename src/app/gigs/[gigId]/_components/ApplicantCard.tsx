@@ -1,32 +1,62 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { GIG_APPLICATION_STATUS, GigApplicant } from "@prisma/client";
 import { Check } from "lucide-react";
 import React from "react";
+import { Applicant, ModifiedGig } from "./GigApplicants";
+import { acceptApplicationStatusAction } from "../../action";
+import { useServerAction } from "zsa-react";
+import { toast } from "sonner";
 
-type Applicant = {
-  id: string;
-  name: string;
-};
+const ApplicantCard = ({
+  applicant,
+  gigData,
+}: {
+  applicant: Applicant;
+  gigData: ModifiedGig;
+}) => {
+  const { isPending, execute } = useServerAction(acceptApplicationStatusAction);
 
-const ApplicantCard = ({ applicant }: { applicant: Applicant }) => {
-  const handleAccept = (applicantId: string) => {
-    console.log(`Accepted applicant with ID: ${applicantId}`);
-    // Implement your accept logic here
+  const handleAccept = async (status: GIG_APPLICATION_STATUS) => {
+    const [data, err] = await execute({
+      gigId: applicant.gigId,
+      applicationId: applicant.id,
+      clientId: gigData.userId,
+      endDate: gigData.deadline,
+      startDate: new Date(),
+      freelancerId: applicant.freelancerId,
+      price: applicant.price,
+    });
+
+    if (err) {
+      console.log(err);
+      return toast.error(err?.message || "Something went wrong!");
+    }
+
+    toast.success("Application Accpted, You can check the your contract here");
   };
 
   return (
     <div className="flex items-center justify-between p-3 bg-customLightGray/10 hover:bg-customLightGray/20 rounded-lg">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={undefined} />
+          <AvatarImage
+            src={applicant?.freelancer?.profilePicture || undefined}
+          />
           <AvatarFallback className="uppercase border border-customOrange text-darkGray font-semibold">
-            {applicant.name[0]}
+            {applicant?.freelancer?.firstName[0]}
           </AvatarFallback>
         </Avatar>
-        <span className="font-medium">{applicant.name}</span>
+        <span className="font-medium">
+          {applicant?.freelancer?.firstName} {applicant?.freelancer?.lastName}
+        </span>
       </div>
-      <Button size="sm" onClick={() => handleAccept(applicant.id)}>
+      <Button
+        size="sm"
+        onClick={() => handleAccept("PENDING")}
+        disabled={isPending || gigData.status !== "AVAILABLE"}
+      >
         <Check className="mr-2 h-4 w-4" color="white" />
         Accept
       </Button>

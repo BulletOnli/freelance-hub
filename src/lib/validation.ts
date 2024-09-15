@@ -71,3 +71,10 @@ export const createGigSchema = z.object({
       message: "Deadline must be a valid date",
     }),
 });
+
+export const createGigApplicationSchema = z.object({
+  price: z.number().min(50, "Price is required"),
+  message: z.string().min(10, "Message must be at least 10 characters"),
+  portfolio: z.string().url("Invalid URL"),
+  gigId: z.string().min(1),
+});

@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { UserRole } from "@prisma/client";
 import argon2 from "argon2";
-import { createInstantWallet } from "./wallet";
+import { createInstantWallet } from "./wallets";
 
 export const getLoggedInUser = async (userId: string) => {
   return await prisma.user.findUnique({

@@ -5,6 +5,8 @@ import Link from "next/link";
 import React from "react";
 import { format, formatDistanceToNow } from "date-fns";
 import { Gig, User } from "@prisma/client";
+import ApplicationModal from "@/components/ApplicationModal";
+import { getCurrentUser } from "@/lib/sessions";
 
 type Props = {
   gig: Gig & {
@@ -18,7 +20,9 @@ type Props = {
   };
 };
 
-const GigCard = ({ gig }: Props) => {
+const GigCard = async ({ gig }: Props) => {
+  const user = await getCurrentUser();
+
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
       <div className="flex items-center gap-2">
@@ -58,10 +62,18 @@ const GigCard = ({ gig }: Props) => {
       </div>
 
       <div className="flex flex-wrap items-center gap-2 ">
-        <Button className="rounded-full px-4" size="sm">
-          <BriefcaseBusiness className="mr-2 size-5" color="white" />
-          Apply Now
-        </Button>
+        {user?.role === "FREELANCER" && (
+          <ApplicationModal gigId={gig?.id}>
+            <Button
+              className="rounded-full px-4"
+              size="sm"
+              disabled={gig.status !== "AVAILABLE"}
+            >
+              <BriefcaseBusiness className="mr-2 size-5" color="white" />
+              Apply Now
+            </Button>
+          </ApplicationModal>
+        )}
         <Button variant="outline" className="rounded-full px-4" size="sm">
           <Mail className="mr-2 size-5" />
           Message
