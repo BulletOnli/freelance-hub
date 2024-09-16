@@ -163,7 +163,7 @@ model GigContract {
 
 model GigApplicant {
   id           String                 @id @default(uuid())
-  gigId        String                 @unique
+  gigId        String
   freelancerId String
   price        Float
   message      String
@@ -175,5 +175,6 @@ model GigApplicant {
   freelancer User @relation(fields: [freelancerId], references: [id])
   gig        Gig? @relation(fields: [gigId], references: [id], onDelete: Cascade)
 
+  @@unique([gigId, freelancerId])
   @@map("gig-applicants")
 }

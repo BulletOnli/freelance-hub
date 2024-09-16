@@ -43,6 +43,9 @@ const GigDetailsPage = async ({ params }: Props) => {
   // If the user viewed their created GIG
   const isUsersGig = user?.role === "CLIENT" && user?.id === userId;
 
+  const userBalance = user?.wallet?.balance ?? 0;
+  const isNotEnoughBalance = userBalance < budget;
+
   return (
     <div className="container mx-auto flex flex-wrap justify-center gap-6 px-4 py-8">
       <Card className="w-full max-w-4xl h-fit overflow-hidden">
@@ -97,10 +100,12 @@ const GigDetailsPage = async ({ params }: Props) => {
               <ApplicationModal gigId={params?.gigId}>
                 <Button
                   className="w-full"
-                  disabled={gigData.status !== "AVAILABLE"}
+                  disabled={
+                    gigData.status !== "AVAILABLE" || isNotEnoughBalance
+                  }
                 >
                   <BriefcaseBusiness className="mr-2 size-5" color="white" />
-                  Apply Now
+                  {isNotEnoughBalance ? "Not Enough Balance" : "Apply Now"}
                 </Button>
               </ApplicationModal>
             )}

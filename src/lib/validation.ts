@@ -1,3 +1,4 @@
+import { MINIMUM_GIG_PRICE } from "@/constants";
 import { z } from "zod";
 
 const requiredString = z.string().min(2);
@@ -60,7 +61,7 @@ export const createGigSchema = z.object({
     .max(500, "Description must be 500 characters or less"),
   budget: z
     .number()
-    .min(50, "Budget is required")
+    .min(MINIMUM_GIG_PRICE, "Budget is required")
     .refine((val) => !isNaN(val), {
       message: "Budget must be a valid number",
     }),
@@ -73,7 +74,7 @@ export const createGigSchema = z.object({
 });
 
 export const createGigApplicationSchema = z.object({
-  price: z.number().min(50, "Price is required"),
+  price: z.number().min(MINIMUM_GIG_PRICE, "Price is required"),
   message: z.string().min(10, "Message must be at least 10 characters"),
   portfolio: z.string().url("Invalid URL"),
   gigId: z.string().min(1),

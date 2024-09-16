@@ -24,6 +24,9 @@ import {
 import { useServerAction } from "zsa-react";
 import { createGigAction } from "../action";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { MINIMUM_GIG_PRICE } from "@/constants";
 
 type FormValues = z.infer<typeof createGigSchema>;
 
@@ -36,19 +39,20 @@ export default function CreateGigModal() {
     defaultValues: {
       title: "",
       description: "",
-      budget: 50,
-      deadline: "",
+      budget: MINIMUM_GIG_PRICE,
+      deadline: format(new Date(), "yyyy-MM-dd"),
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     const [data, err] = await execute(values);
-    // console.log("data", data);
-    // console.log("err", err?.fieldErrors);
-
-    if (data && !err) {
-      setOpen(false);
+    if (err) {
+      return toast.error(err?.message || "Something went wrong!");
     }
+
+    toast.success("Successfully created a Gig!");
+    setOpen(false);
+    form.reset();
   };
 
   return (
@@ -118,7 +122,12 @@ export default function CreateGigModal() {
                 <FormItem>
                   <FormLabel>Deadline</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} required />
+                    <Input
+                      type="date"
+                      min={new Date().toISOString().split("T")[0]}
+                      {...field}
+                      required
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

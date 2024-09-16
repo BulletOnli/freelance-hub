@@ -23,6 +23,9 @@ type Props = {
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
 
+  const userBalance = user?.wallet?.balance ?? 0;
+  const isNotEnoughBalance = userBalance < gig?.budget;
+
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
       <div className="flex items-center gap-2">
@@ -67,10 +70,10 @@ const GigCard = async ({ gig }: Props) => {
             <Button
               className="rounded-full px-4"
               size="sm"
-              disabled={gig.status !== "AVAILABLE"}
+              disabled={gig.status !== "AVAILABLE" || isNotEnoughBalance}
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
-              Apply Now
+              {isNotEnoughBalance ? "Not Enough Balance" : "Apply Now"}
             </Button>
           </ApplicationModal>
         )}
