@@ -1,25 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ApplicantCard from "./ApplicantCard";
-import { Gig, GigApplicant } from "@prisma/client";
-
-export type Applicant = GigApplicant & {
-  freelancer: {
-    firstName: string;
-    lastName: string;
-    email: string | null;
-    profilePicture: string | null;
-  };
-};
-
-export type ModifiedGig = Gig & {
-  user: {
-    firstName: string;
-    lastName: string;
-    email: string | null;
-    profilePicture: string | null;
-  };
-  applicants: Applicant[] | [];
-};
+import { ModifiedGig } from "@/types";
 
 type Props = {
   gigData: ModifiedGig;

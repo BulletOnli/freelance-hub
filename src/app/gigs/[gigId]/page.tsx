@@ -97,7 +97,7 @@ const GigDetailsPage = async ({ params }: Props) => {
         {!isUsersGig && (
           <CardFooter className="flex flex-col gap-2">
             {user?.role === "FREELANCER" && (
-              <ApplicationModal gigId={params?.gigId}>
+              <ApplicationModal gigData={gigData}>
                 <Button
                   className="w-full"
                   disabled={

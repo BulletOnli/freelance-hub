@@ -1,5 +1,5 @@
 "use server";
-import { createGig, updateGigStatus } from "@/data-access/gigs";
+import { createGig, getGigDetails, updateGigStatus } from "@/data-access/gigs";
 import {
   applyToGig,
   updateApplicationStatus,
@@ -12,6 +12,7 @@ import { z } from "zod";
 import { createServerAction } from "zsa";
 import { createGigContract } from "@/data-access/gig-contract";
 import { MINIMUM_GIG_PRICE } from "@/constants";
+import prisma from "@/lib/prisma";
 
 export const createGigAction = createServerAction()
   .input(createGigSchema)
@@ -30,7 +31,25 @@ export const applyToGigAction = createServerAction()
     const user = await getCurrentUser();
     if (!user) throw new Error("Please login first");
 
+    const userBalance = user.wallet?.balance ?? 0;
+
     try {
+      const gig = await prisma.gig.findUnique({
+        where: { id: input.gigId },
+        select: {
+          budget: true,
+        },
+      });
+
+      if (!gig) throw new Error("Gig not found");
+
+      if (userBalance < input.price && userBalance < gig.budget) {
+        throw new Error("Not Enough balance");
+      }
+      if (input.price > gig.budget) {
+        throw new Error(`The client budget is only ${gig.budget}.`);
+      }
+
       await applyToGig({
         ...input,
         freelancerId: user.id,

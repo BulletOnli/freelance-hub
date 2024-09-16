@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { GIG_APPLICATION_STATUS, GigApplicant } from "@prisma/client";
 import { Check } from "lucide-react";
 import React from "react";
-import { Applicant, ModifiedGig } from "./GigApplicants";
 import { acceptApplicationStatusAction } from "../../action";
 import { useServerAction } from "zsa-react";
 import { toast } from "sonner";
+import { Applicant, ModifiedGig } from "@/types";
 
 const ApplicantCard = ({
   applicant,
@@ -48,9 +48,12 @@ const ApplicantCard = ({
             {applicant?.freelancer?.firstName[0]}
           </AvatarFallback>
         </Avatar>
-        <span className="font-medium">
-          {applicant?.freelancer?.firstName} {applicant?.freelancer?.lastName}
-        </span>
+        <div>
+          <span className="font-medium">
+            {applicant?.freelancer?.firstName} {applicant?.freelancer?.lastName}
+          </span>
+          <p className="text-xs">Price Offer: {applicant?.price}</p>
+        </div>
       </div>
       <Button
         size="sm"

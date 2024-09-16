@@ -10,7 +10,7 @@ type CreateGigContract = {
 };
 
 export const createGigContract = async (input: CreateGigContract) => {
-  return await prisma.gigContract.create({
+  await prisma.gigContract.create({
     data: {
       gigId: input.gigId,
       freelancerId: input.freelancerId,
@@ -19,6 +19,17 @@ export const createGigContract = async (input: CreateGigContract) => {
       price: input.price,
       startDate: input.startDate || new Date(),
       endDate: input.endDate || new Date(),
+    },
+  });
+
+  return await prisma.wallet.update({
+    where: {
+      userId: input.freelancerId,
+    },
+    data: {
+      balance: {
+        decrement: input.price,
+      },
     },
   });
 };

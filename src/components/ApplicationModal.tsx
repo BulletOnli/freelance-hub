@@ -28,14 +28,16 @@ import { useServerAction } from "zsa-react";
 import { applyToGigAction } from "@/app/gigs/action";
 import { createGigApplicationSchema } from "@/lib/validation";
 import { toast } from "sonner";
+import { ModifiedGig } from "@/types";
+import { MINIMUM_GIG_PRICE } from "@/constants";
 
 type FormValues = z.infer<typeof createGigApplicationSchema>;
 
 type Props = {
-  gigId: string;
+  gigData: ModifiedGig;
 } & PropsWithChildren;
 
-export default function ApplicationModal({ children, gigId }: Props) {
+export default function ApplicationModal({ children, gigData }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { isPending, execute } = useServerAction(applyToGigAction);
 
@@ -45,14 +47,14 @@ export default function ApplicationModal({ children, gigId }: Props) {
       price: 50,
       message: "",
       portfolio: "",
-      gigId,
+      gigId: gigData?.id,
     },
   });
 
   const onSubmit = async (values: FormValues) => {
     const [data, err] = await execute({
       ...values,
-      gigId,
+      gigId: gigData?.id,
     });
 
     if (err) {
@@ -86,7 +88,8 @@ export default function ApplicationModal({ children, gigId }: Props) {
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
                       required
-                      min={50}
+                      min={MINIMUM_GIG_PRICE}
+                      max={gigData?.budget}
                     />
                   </FormControl>
                   <FormMessage />
