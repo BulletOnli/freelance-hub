@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { BriefcaseBusiness, Mail, Send } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { format, formatDistanceToNow } from "date-fns";
+import { format, formatDistanceToNow, isAfter } from "date-fns";
 import ApplicationModal from "@/components/ApplicationModal";
 import { getCurrentUser } from "@/lib/sessions";
 import { ModifiedGig } from "@/types";
@@ -14,9 +14,18 @@ type Props = {
 
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
-
   const userBalance = user?.wallet?.balance ?? 0;
-  const isNotEnoughBalance = userBalance < gig?.budget;
+  const hasInsufficientBalance = userBalance < gig?.budget;
+  const isPastDeadline = isAfter(new Date(), gig?.deadline);
+
+  const applyButtonLabel = isPastDeadline
+    ? "Deadline Passed"
+    : hasInsufficientBalance
+    ? "Not Enough Balance"
+    : "Apply Now";
+
+  const isApplicationDisabled =
+    gig.status !== "AVAILABLE" || hasInsufficientBalance || isPastDeadline;
 
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
@@ -40,7 +49,6 @@ const GigCard = async ({ gig }: Props) => {
       <Link href={`/gigs/${gig?.id}`}>
         <div className="space-y-2">
           <p className="font-semibold text-customDark">{gig?.title}</p>
-
           <p className="text-sm text-customSemiDark">{gig?.description}</p>
         </div>
       </Link>
@@ -52,7 +60,11 @@ const GigCard = async ({ gig }: Props) => {
         </div>
         <div className="text-sm flex items-center gap-1">
           <p className="font-medium ">Deadline: </p>
-          <p>{format(new Date(gig?.deadline), "MMMM dd, y")}</p>
+          <p>{format(gig?.deadline, "MMMM dd, hh:mm a")}</p>
+        </div>
+        <div className="text-sm flex items-center gap-1">
+          <p className="font-medium ">Status: </p>
+          <p>{gig?.status}</p>
         </div>
       </div>
 
@@ -62,10 +74,10 @@ const GigCard = async ({ gig }: Props) => {
             <Button
               className="rounded-full px-4"
               size="sm"
-              disabled={gig.status !== "AVAILABLE" || isNotEnoughBalance}
+              disabled={isApplicationDisabled}
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
-              {isNotEnoughBalance ? "Not Enough Balance" : "Apply Now"}
+              {applyButtonLabel}
             </Button>
           </ApplicationModal>
         )}

@@ -25,7 +25,7 @@ import { useServerAction } from "zsa-react";
 import { createGigAction } from "../action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format, formatISO } from "date-fns";
 import { MINIMUM_GIG_PRICE } from "@/constants";
 
 type FormValues = z.infer<typeof createGigSchema>;
@@ -34,13 +34,17 @@ export default function CreateGigModal() {
   const [open, setOpen] = useState(false);
   const { isPending, execute } = useServerAction(createGigAction);
 
+  const today = new Date();
+  const nextDay = new Date(today);
+  nextDay.setDate(today.getDate() + 1);
+
   const form = useForm<FormValues>({
     resolver: zodResolver(createGigSchema),
     defaultValues: {
       title: "",
       description: "",
       budget: MINIMUM_GIG_PRICE,
-      deadline: format(new Date(), "yyyy-MM-dd"),
+      deadline: format(nextDay, "yyyy-MM-dd'T'HH:mm"),
     },
   });
 
@@ -123,8 +127,8 @@ export default function CreateGigModal() {
                   <FormLabel>Deadline</FormLabel>
                   <FormControl>
                     <Input
-                      type="date"
-                      min={new Date().toISOString().split("T")[0]}
+                      type="datetime-local"
+                      min={new Date().toISOString().slice(0, 16)}
                       {...field}
                       required
                     />

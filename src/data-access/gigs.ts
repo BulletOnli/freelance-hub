@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import { GIG_STATUS } from "@prisma/client";
-import { formatISO } from "date-fns";
+import { format, formatISO, parseISO } from "date-fns";
 
 export const getAllGigs = async () => {
   return await prisma.gig.findMany({
@@ -65,7 +65,7 @@ export const createGig = async (input: CreateGig) => {
       title: input.title,
       description: input.description,
       budget: Number(input.budget),
-      deadline: formatISO(input.deadline),
+      deadline: new Date(input.deadline),
       userId: input.userId,
     },
   });

@@ -1,3 +1,4 @@
+import { ADMIN_USER_ID } from "@/constants";
 import prisma from "@/lib/prisma";
 
 type CreateGigContract = {
@@ -10,7 +11,7 @@ type CreateGigContract = {
 };
 
 export const createGigContract = async (input: CreateGigContract) => {
-  await prisma.gigContract.create({
+  const contract = await prisma.gigContract.create({
     data: {
       gigId: input.gigId,
       freelancerId: input.freelancerId,
@@ -22,14 +23,18 @@ export const createGigContract = async (input: CreateGigContract) => {
     },
   });
 
-  return await prisma.wallet.update({
-    where: {
-      userId: input.freelancerId,
-    },
-    data: {
-      balance: {
-        decrement: input.price,
-      },
-    },
+  /** 
+    Deduct the agreed price to the client's wallet and send it to the admin's wallet
+  */
+  await prisma.wallet.update({
+    where: { userId: input.clientId },
+    data: { balance: { decrement: input.price } },
   });
+
+  await prisma.wallet.update({
+    where: { userId: ADMIN_USER_ID },
+    data: { balance: { increment: input.price } },
+  });
+
+  return contract;
 };
