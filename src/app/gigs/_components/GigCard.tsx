@@ -4,20 +4,12 @@ import { BriefcaseBusiness, Mail, Send } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { format, formatDistanceToNow } from "date-fns";
-import { Gig, User } from "@prisma/client";
 import ApplicationModal from "@/components/ApplicationModal";
 import { getCurrentUser } from "@/lib/sessions";
+import { ModifiedGig } from "@/types";
 
 type Props = {
-  gig: Gig & {
-    user: {
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string | null;
-      profilePicture: string | null;
-    };
-  };
+  gig: ModifiedGig;
 };
 
 const GigCard = async ({ gig }: Props) => {
@@ -66,7 +58,7 @@ const GigCard = async ({ gig }: Props) => {
 
       <div className="flex flex-wrap items-center gap-2 ">
         {user?.role === "FREELANCER" && (
-          <ApplicationModal gigId={gig?.id}>
+          <ApplicationModal gigData={gig}>
             <Button
               className="rounded-full px-4"
               size="sm"

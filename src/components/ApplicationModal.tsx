@@ -44,7 +44,7 @@ export default function ApplicationModal({ children, gigData }: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(createGigApplicationSchema),
     defaultValues: {
-      price: 50,
+      price: MINIMUM_GIG_PRICE,
       message: "",
       portfolio: "",
       gigId: gigData?.id,
@@ -72,6 +72,10 @@ export default function ApplicationModal({ children, gigData }: Props) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Submit Application</DialogTitle>
+          <DialogDescription>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere,
+            doloremque.
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
