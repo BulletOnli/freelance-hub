@@ -1,12 +1,26 @@
 import {
   Gig,
   GigApplicant,
+  UserRole,
   User as UserType,
   Wallet as WalletType,
 } from "@prisma/client";
 
-export type User = UserType & {
-  wallet: WalletType;
+export type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+  profilePicture: string | null;
+  googleId: string | null;
+  role: UserRole;
+  createdAt: Date;
+  updatedAt: Date;
+  wallet: {
+    id: string;
+    userId: string;
+    balance: number;
+  } | null;
 };
 
 export type Applicant = GigApplicant & {
@@ -25,5 +39,4 @@ export type ModifiedGig = Gig & {
     email: string | null;
     profilePicture: string | null;
   };
-  applicants: Applicant[] | [];
 };

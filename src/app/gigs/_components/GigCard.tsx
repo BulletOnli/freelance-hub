@@ -14,18 +14,7 @@ type Props = {
 
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
-  const userBalance = user?.wallet?.balance ?? 0;
-  const hasInsufficientBalance = userBalance < gig?.budget;
   const isPastDeadline = isAfter(new Date(), gig?.deadline);
-
-  const applyButtonLabel = isPastDeadline
-    ? "Deadline Passed"
-    : hasInsufficientBalance
-    ? "Not Enough Balance"
-    : "Apply Now";
-
-  const isApplicationDisabled =
-    gig.status !== "AVAILABLE" || hasInsufficientBalance || isPastDeadline;
 
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
@@ -74,10 +63,10 @@ const GigCard = async ({ gig }: Props) => {
             <Button
               className="rounded-full px-4"
               size="sm"
-              disabled={isApplicationDisabled}
+              disabled={gig.status !== "AVAILABLE" || isPastDeadline}
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
-              {applyButtonLabel}
+              {isPastDeadline ? "Deadline Passed" : "Apply Now"}
             </Button>
           </ApplicationModal>
         )}

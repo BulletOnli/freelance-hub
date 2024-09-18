@@ -27,10 +27,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { format, formatISO } from "date-fns";
 import { MINIMUM_GIG_PRICE } from "@/constants";
+import { User } from "@/types";
 
 type FormValues = z.infer<typeof createGigSchema>;
 
-export default function CreateGigModal() {
+export default function CreateGigModal({ user }: { user: User | null }) {
   const [open, setOpen] = useState(false);
   const { isPending, execute } = useServerAction(createGigAction);
 

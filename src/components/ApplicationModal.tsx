@@ -44,7 +44,7 @@ export default function ApplicationModal({ children, gigData }: Props) {
   const form = useForm<FormValues>({
     resolver: zodResolver(createGigApplicationSchema),
     defaultValues: {
-      price: MINIMUM_GIG_PRICE,
+      price: gigData?.budget,
       message: "",
       portfolio: "",
       gigId: gigData?.id,

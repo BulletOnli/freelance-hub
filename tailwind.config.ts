@@ -93,6 +93,9 @@ const config = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      height: {
+        screen2: "calc(100vh - 78px)", // 78px - Navbar height
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

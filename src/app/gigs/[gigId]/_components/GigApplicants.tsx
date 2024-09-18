@@ -1,9 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ApplicantCard from "./ApplicantCard";
-import { ModifiedGig } from "@/types";
+import { Applicant, ModifiedGig } from "@/types";
 
 type Props = {
-  gigData: ModifiedGig;
+  gigData: ModifiedGig & {
+    applicants: Applicant[] | [];
+  };
 };
 
 const GigApplicants = ({ gigData }: Props) => {

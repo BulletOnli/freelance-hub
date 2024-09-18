@@ -50,10 +50,10 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
           <div className="w-full flex flex-col border border-lightBorder rounded-lg">
             <div className="p-4">
               <div className="flex items-center gap-2">
-                <p className="font-medium">Available Coins</p>
+                <p className="font-medium">Current Balance</p>
               </div>
               <p className="my-2 text-2xl text-customDark font-bold">
-                ₱ {user.wallet.balance}
+                ₱ {user?.wallet?.balance}
               </p>
             </div>
 
