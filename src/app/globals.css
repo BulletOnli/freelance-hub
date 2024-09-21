@@ -79,3 +79,21 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-gray-600 rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #98989880 transparent; /* thumb color and track color */
+}

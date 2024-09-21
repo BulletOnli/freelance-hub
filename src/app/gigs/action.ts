@@ -59,6 +59,8 @@ export const applyToGigAction = createServerAction()
         ...input,
         freelancerId: user.id,
       });
+
+      revalidatePath(`/gigs/${input.gigId}`);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {
@@ -70,7 +72,7 @@ export const applyToGigAction = createServerAction()
     }
   });
 
-export const acceptApplicationStatusAction = createServerAction()
+export const acceptApplicationAction = createServerAction()
   .input(
     z.object({
       gigId: z.string().min(1),
@@ -107,6 +109,32 @@ export const acceptApplicationStatusAction = createServerAction()
       ]);
 
       revalidatePath(`/gigs/${response[1].id}`);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === "P2002") {
+          throw new Error("Gig is already ongoing");
+        }
+      }
+
+      throw error;
+    }
+  });
+
+export const removeApplicationAction = createServerAction()
+  .input(
+    z.object({
+      applicationId: z.string().min(1),
+    })
+  )
+  .handler(async ({ input }) => {
+    try {
+      const res = await prisma.gigApplicant.delete({
+        where: {
+          id: input?.applicationId,
+        },
+      });
+
+      revalidatePath(`/gigs/${res?.gigId}`);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === "P2002") {

@@ -29,6 +29,7 @@ export const getGigDetails = async (gigId: string) => {
     include: {
       user: {
         select: {
+          id: true,
           firstName: true,
           lastName: true,
           email: true,
@@ -39,6 +40,7 @@ export const getGigDetails = async (gigId: string) => {
         include: {
           freelancer: {
             select: {
+              id: true,
               firstName: true,
               lastName: true,
               email: true,

@@ -9,6 +9,7 @@ import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/common/Navbar";
+import Sidebar from "@/components/common/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,6 +33,7 @@ export default async function RootLayout({
           <SessionProvider value={session}>
             <Navbar />
             {children}
+            <Sidebar />
           </SessionProvider>
           <Toaster />
         </GlobalProvider>

@@ -20,9 +20,20 @@ import { redirect } from "next/navigation";
 import { getGigDetails } from "@/data-access/gigs";
 import ApplicationModal from "@/components/ApplicationModal";
 import GigApplicants from "./_components/GigApplicants";
+import { isAfter } from "date-fns";
+import { useServerAction } from "zsa-react";
+import { toast } from "sonner";
+import { removeApplicationAction } from "../action";
+import ApplicationButton from "./_components/ApplicationButton";
 
 type Props = {
   params: { gigId: string };
+};
+
+const statusColor = {
+  AVAILABLE: "bg-green-500",
+  ONGOING: "bg-yellow-500",
+  DONE: "bg-blue-500",
 };
 
 const GigDetailsPage = async ({ params }: Props) => {
@@ -34,18 +45,12 @@ const GigDetailsPage = async ({ params }: Props) => {
 
   const { title, description, budget, files, status, userId } = gigData;
 
-  const statusColor = {
-    AVAILABLE: "bg-green-500",
-    ONGOING: "bg-yellow-500",
-    DONE: "bg-blue-500",
-  };
-
   // If the user viewed their created GIG
   const isUsersGig = user?.role === "CLIENT" && user?.id === userId;
 
   return (
-    <div className="container mx-auto flex flex-wrap justify-center gap-6 px-4 py-8">
-      <Card className="w-full max-w-4xl h-fit overflow-hidden">
+    <div className="container mx-auto flex justify-center gap-4 px-4 py-8">
+      <Card className="w-full h-fit overflow-hidden">
         <CardHeader>
           <CardTitle className="text-2xl md:text-3xl font-bold">
             {title}
@@ -94,15 +99,7 @@ const GigDetailsPage = async ({ params }: Props) => {
         {!isUsersGig && (
           <CardFooter className="flex flex-col gap-2">
             {user?.role === "FREELANCER" && (
-              <ApplicationModal gigData={gigData}>
-                <Button
-                  className="w-full"
-                  disabled={gigData.status !== "AVAILABLE"}
-                >
-                  <BriefcaseBusiness className="mr-2 size-5" color="white" />
-                  Apply Now
-                </Button>
-              </ApplicationModal>
+              <ApplicationButton gigData={gigData} user={user} />
             )}
             <Button variant="outline" className="w-full">
               <Mail className="size-5 mr-2" />

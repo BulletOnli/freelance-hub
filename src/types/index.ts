@@ -25,6 +25,7 @@ export type User = {
 
 export type Applicant = GigApplicant & {
   freelancer: {
+    id: string;
     firstName: string;
     lastName: string;
     email: string | null;
@@ -34,6 +35,7 @@ export type Applicant = GigApplicant & {
 
 export type ModifiedGig = Gig & {
   user: {
+    id: string;
     firstName: string;
     lastName: string;
     email: string | null;

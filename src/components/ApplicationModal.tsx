@@ -28,18 +28,22 @@ import { useServerAction } from "zsa-react";
 import { applyToGigAction } from "@/app/gigs/action";
 import { createGigApplicationSchema } from "@/lib/validation";
 import { toast } from "sonner";
-import { ModifiedGig } from "@/types";
+import { Applicant, ModifiedGig } from "@/types";
 import { MINIMUM_GIG_PRICE } from "@/constants";
+import { useSession } from "@/providers/SessionProvider";
 
 type FormValues = z.infer<typeof createGigApplicationSchema>;
 
 type Props = {
-  gigData: ModifiedGig;
+  gigData: ModifiedGig & {
+    applicants?: Applicant[] | [];
+  };
 } & PropsWithChildren;
 
 export default function ApplicationModal({ children, gigData }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { isPending, execute } = useServerAction(applyToGigAction);
+  const { user } = useSession();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(createGigApplicationSchema),

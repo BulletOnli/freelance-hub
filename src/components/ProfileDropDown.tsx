@@ -11,6 +11,7 @@ import { HandCoins, History, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
 import { logoutAction } from "@/lib/sessions";
 import { User } from "@/types";
+import formatCurrency from "@/utils/formatCurrency";
 
 const ProfileDropDown = ({ user }: { user: User | null }) => {
   if (!user) {
@@ -32,7 +33,7 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="relative z-[99] flex flex-col gap-4 p-4 min-w-[300px]">
+        <DropdownMenuContent className="relative z-[99] flex flex-col gap-4 p-4">
           <div className="flex items-center gap-2">
             {/* <Avatar className="size-10">
               <AvatarImage src={user?.profilePicture || undefined} />
@@ -50,10 +51,10 @@ const ProfileDropDown = ({ user }: { user: User | null }) => {
           <div className="w-full flex flex-col border border-lightBorder rounded-lg">
             <div className="p-4">
               <div className="flex items-center gap-2">
-                <p className="font-medium">Current Balance</p>
+                <p className="font-medium">Wallet Balance</p>
               </div>
               <p className="my-2 text-2xl text-customDark font-bold">
-                ₱ {user?.wallet?.balance}
+                {formatCurrency(user?.wallet?.balance)}
               </p>
             </div>
 

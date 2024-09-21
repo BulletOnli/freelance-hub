@@ -7,6 +7,8 @@ import { format, formatDistanceToNow, isAfter } from "date-fns";
 import ApplicationModal from "@/components/ApplicationModal";
 import { getCurrentUser } from "@/lib/sessions";
 import { ModifiedGig } from "@/types";
+import formatCurrency from "@/utils/formatCurrency";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   gig: ModifiedGig;
@@ -15,6 +17,10 @@ type Props = {
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
   const isPastDeadline = isAfter(new Date(), gig?.deadline);
+
+  // If the gig is available and the deadline has passed, set the status to EXPIRED
+  const status =
+    gig?.status === "AVAILABLE" && isPastDeadline ? "EXPIRED" : gig?.status;
 
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
@@ -35,6 +41,10 @@ const GigCard = async ({ gig }: Props) => {
         </div>
       </div>
 
+      <Badge className="w-fit text-[12px]" variant="outline">
+        {status}
+      </Badge>
+
       <Link href={`/gigs/${gig?.id}`}>
         <div className="space-y-2">
           <p className="font-semibold text-customDark">{gig?.title}</p>
@@ -45,16 +55,16 @@ const GigCard = async ({ gig }: Props) => {
       <div>
         <div className="text-sm flex items-center gap-1">
           <p className="font-medium ">Budget: </p>
-          <p>P{gig?.budget}</p>
+          <p>{formatCurrency(gig?.budget)}</p>
         </div>
         <div className="text-sm flex items-center gap-1">
           <p className="font-medium ">Deadline: </p>
           <p>{format(gig?.deadline, "MMMM dd, hh:mm a")}</p>
         </div>
-        <div className="text-sm flex items-center gap-1">
+        {/* <div className="text-sm flex items-center gap-1">
           <p className="font-medium ">Status: </p>
-          <p>{gig?.status}</p>
-        </div>
+          <p>{status}</p>
+        </div> */}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 ">
@@ -66,7 +76,7 @@ const GigCard = async ({ gig }: Props) => {
               disabled={gig.status !== "AVAILABLE" || isPastDeadline}
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
-              {isPastDeadline ? "Deadline Passed" : "Apply Now"}
+              Apply Now
             </Button>
           </ApplicationModal>
         )}
