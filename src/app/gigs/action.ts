@@ -46,10 +46,21 @@ export const applyToGigAction = createServerAction()
         where: { id: input.gigId },
         select: {
           budget: true,
+          status: true,
+          deadline: true,
         },
       });
 
       if (!gig) throw new Error("Gig not found");
+
+      const isPastDeadline = isAfter(new Date(), gig?.deadline);
+      if (isPastDeadline) {
+        throw new Error("Gig has expired");
+      }
+
+      if (gig.status !== "AVAILABLE") {
+        throw new Error(`Gig is ${gig.status}`);
+      }
 
       if (input.price > gig.budget) {
         throw new Error(`The client budget is only ${gig.budget}.`);

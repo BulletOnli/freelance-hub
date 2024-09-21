@@ -2,12 +2,13 @@
 import ApplicationModal from "@/components/ApplicationModal";
 import { Button } from "@/components/ui/button";
 import { isAfter } from "date-fns";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useServerAction } from "zsa-react";
 import { removeApplicationAction } from "../../action";
 import { toast } from "sonner";
 import { BriefcaseBusiness } from "lucide-react";
 import { Applicant, ModifiedGig, User } from "@/types";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   gigData: ModifiedGig & {
@@ -19,6 +20,8 @@ type Props = {
 const ApplicationButton = ({ gigData, user }: Props) => {
   const removeApplication = useServerAction(removeApplicationAction);
   const isPastDeadline = isAfter(new Date(), gigData?.deadline);
+  const searchParams = useSearchParams();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const isAlreadyApplied = gigData?.applicants?.find(
     (applicant) =>
@@ -38,6 +41,12 @@ const ApplicationButton = ({ gigData, user }: Props) => {
     toast.success("Application removed!");
   };
 
+  useEffect(() => {
+    if (searchParams.get("isOpen") === "true") {
+      setIsModalOpen(true);
+    }
+  }, []);
+
   return (
     <>
       {isAlreadyApplied ? (
@@ -49,7 +58,11 @@ const ApplicationButton = ({ gigData, user }: Props) => {
           Cancel application
         </Button>
       ) : (
-        <ApplicationModal gigData={gigData}>
+        <ApplicationModal
+          gigData={gigData}
+          isModalOpen={isModalOpen}
+          key={JSON.stringify(isModalOpen)} // This is the key to re-render the modal
+        >
           <Button
             className="w-full"
             disabled={

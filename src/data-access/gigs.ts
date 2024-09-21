@@ -14,6 +14,19 @@ export const getAllGigs = async () => {
           profilePicture: true,
         },
       },
+      applicants: {
+        include: {
+          freelancer: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+              profilePicture: true,
+            },
+          },
+        },
+      },
     },
     orderBy: {
       createdAt: "desc",

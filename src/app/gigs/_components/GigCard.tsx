@@ -6,17 +6,30 @@ import React from "react";
 import { format, formatDistanceToNow, isAfter } from "date-fns";
 import ApplicationModal from "@/components/ApplicationModal";
 import { getCurrentUser } from "@/lib/sessions";
-import { ModifiedGig } from "@/types";
+import { Applicant, ModifiedGig } from "@/types";
 import formatCurrency from "@/utils/formatCurrency";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Props = {
-  gig: ModifiedGig;
+  gig: ModifiedGig & {
+    applicants?: Applicant[] | [];
+  };
 };
 
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
   const isPastDeadline = isAfter(new Date(), gig?.deadline);
+
+  const isAlreadyApplied = gig?.applicants?.some(
+    (applicant) =>
+      applicant.freelancer?.id === user?.id && applicant.status === "PENDING"
+  );
 
   // If the gig is available and the deadline has passed, set the status to EXPIRED
   const status =
@@ -31,13 +44,21 @@ const GigCard = async ({ gig }: Props) => {
             {gig?.user?.firstName[0]}
           </AvatarFallback>
         </Avatar>
-        <div>
+        <div className="flex flex-col justify-center items-start">
           <p className="text-sm font-semibold text-customDark">
             {gig?.user?.firstName} {gig?.user?.lastName}
           </p>
-          <p className="text-xs">
-            {formatDistanceToNow(gig?.createdAt, { addSuffix: true })}
-          </p>
+
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger className="text-xs m-0 p-0">
+                {formatDistanceToNow(gig?.createdAt, { addSuffix: true })}
+              </TooltipTrigger>
+              <TooltipContent className="bg-white text-customDark border">
+                <p>{format(gig?.createdAt, "MMMM dd, yyyy hh:mm a")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
       </div>
 
@@ -61,24 +82,33 @@ const GigCard = async ({ gig }: Props) => {
           <p className="font-medium ">Deadline: </p>
           <p>{format(gig?.deadline, "MMMM dd, hh:mm a")}</p>
         </div>
-        {/* <div className="text-sm flex items-center gap-1">
-          <p className="font-medium ">Status: </p>
-          <p>{status}</p>
-        </div> */}
       </div>
 
       <div className="flex flex-wrap items-center gap-2 ">
         {user?.role === "FREELANCER" && (
-          <ApplicationModal gigData={gig}>
+          <Link
+            href={{
+              pathname: `/gigs/${gig?.id}`,
+              query: {
+                isOpen:
+                  !isAlreadyApplied &&
+                  !isPastDeadline &&
+                  status === "AVAILABLE",
+              },
+            }}
+          >
             <Button
               className="rounded-full px-4"
               size="sm"
-              disabled={gig.status !== "AVAILABLE" || isPastDeadline}
+              disabled={
+                gig.status !== "AVAILABLE" || isPastDeadline || isAlreadyApplied
+              }
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
-              Apply Now
+
+              {isAlreadyApplied ? "Already applied" : "Apply Now"}
             </Button>
-          </ApplicationModal>
+          </Link>
         )}
         <Button variant="outline" className="rounded-full px-4" size="sm">
           <Mail className="mr-2 size-5" />

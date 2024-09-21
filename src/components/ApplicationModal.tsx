@@ -1,5 +1,5 @@
 "use client";
-import { PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +18,6 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,7 +29,6 @@ import { createGigApplicationSchema } from "@/lib/validation";
 import { toast } from "sonner";
 import { Applicant, ModifiedGig } from "@/types";
 import { MINIMUM_GIG_PRICE } from "@/constants";
-import { useSession } from "@/providers/SessionProvider";
 
 type FormValues = z.infer<typeof createGigApplicationSchema>;
 
@@ -38,12 +36,16 @@ type Props = {
   gigData: ModifiedGig & {
     applicants?: Applicant[] | [];
   };
+  isModalOpen?: boolean;
 } & PropsWithChildren;
 
-export default function ApplicationModal({ children, gigData }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function ApplicationModal({
+  children,
+  gigData,
+  isModalOpen = false,
+}: Props) {
+  const [isOpen, setIsOpen] = useState(isModalOpen);
   const { isPending, execute } = useServerAction(applyToGigAction);
-  const { user } = useSession();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(createGigApplicationSchema),
