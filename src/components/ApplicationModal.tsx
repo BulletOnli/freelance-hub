@@ -24,11 +24,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useServerAction } from "zsa-react";
-import { applyToGigAction } from "@/app/gigs/action";
 import { createGigApplicationSchema } from "@/lib/validation";
 import { toast } from "sonner";
 import { Applicant, ModifiedGig } from "@/types";
 import { MINIMUM_GIG_PRICE } from "@/constants";
+import { applyToGigAction } from "@/app/gigs/[gigId]/action";
 
 type FormValues = z.infer<typeof createGigApplicationSchema>;
 

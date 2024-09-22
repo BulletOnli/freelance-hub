@@ -5,6 +5,12 @@ import { Home, LayoutDashboard, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/providers/SessionProvider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const NAV_LINKS = [
   {
@@ -15,8 +21,8 @@ const NAV_LINKS = [
   },
   {
     icon: LayoutDashboard,
-    label: "Dashboard",
-    href: "/dashboard",
+    label: "Gigs",
+    href: "/gigs",
     prohibitedRoles: [],
   },
   {
@@ -33,7 +39,7 @@ const INVALID_ROUTES = ["/login", "/signup", "/chat"];
 const Sidebar = () => {
   const { user } = useSession();
   const pathname = usePathname();
-  if (INVALID_ROUTES.includes(pathname)) return null;
+  if (!user || INVALID_ROUTES.includes(pathname)) return null;
 
   return (
     <div className="fixed left-0 bottom-0 h-full px-6 flex justify-center items-center bg-gradient-to-r from-customDark/5 to-black/0">
@@ -43,15 +49,27 @@ const Sidebar = () => {
           if (user && link.prohibitedRoles.includes(user?.role)) return null;
 
           return (
-            <Link key={link.label} href={link.href}>
-              <Button
-                size="icon"
-                variant="outline"
-                className="rounded-full size-12"
-              >
-                <link.icon />
-              </Button>
-            </Link>
+            <TooltipProvider key={link.label}>
+              <Tooltip delayDuration={200}>
+                <TooltipTrigger asChild>
+                  <Link href={link.href}>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="rounded-full size-12"
+                    >
+                      <link.icon />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent
+                  side="right"
+                  className="bg-white text-customDark border"
+                >
+                  <p>{link.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           );
         })}
       </div>

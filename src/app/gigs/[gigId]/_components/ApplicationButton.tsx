@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { isAfter } from "date-fns";
 import React, { useEffect, useState } from "react";
 import { useServerAction } from "zsa-react";
-import { removeApplicationAction } from "../../action";
+import { removeApplicationAction } from "../action";
 import { toast } from "sonner";
 import { BriefcaseBusiness } from "lucide-react";
 import { Applicant, ModifiedGig, User } from "@/types";

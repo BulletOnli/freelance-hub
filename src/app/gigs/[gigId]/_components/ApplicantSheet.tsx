@@ -14,7 +14,7 @@ import formatCurrency from "@/utils/formatCurrency";
 import { Check, ChevronRightIcon, X } from "lucide-react";
 import Link from "next/link";
 import { useServerAction } from "zsa-react";
-import { acceptApplicationAction, removeApplicationAction } from "../../action";
+import { acceptApplicationAction, removeApplicationAction } from "../action";
 import { toast } from "sonner";
 
 type Props = {

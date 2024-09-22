@@ -10,6 +10,34 @@ type CreateGigContract = {
   endDate: Date;
 };
 
+export const getContractDetails = async (gigId: string) => {
+  const contract = await prisma.gigContract.findFirst({
+    where: { gigId },
+    include: {
+      client: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          profilePicture: true,
+        },
+      },
+      freelancer: {
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          email: true,
+          profilePicture: true,
+        },
+      },
+    },
+  });
+
+  return contract;
+};
+
 export const createGigContract = async (input: CreateGigContract) => {
   const contract = await prisma.gigContract.create({
     data: {
