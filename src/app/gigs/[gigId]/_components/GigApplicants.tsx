@@ -3,6 +3,7 @@ import { Applicant, ModifiedGig } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import formatCurrency from "@/utils/formatCurrency";
 import ApplicantSheet from "./ApplicantSheet";
+import Link from "next/link";
 
 type Props = {
   gigData: ModifiedGig & {
@@ -33,10 +34,13 @@ const GigApplicants = ({ gigData }: Props) => {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <span className="font-medium">
+                    <Link
+                      href={`/profile/${applicant?.freelancerId}`}
+                      className="font-medium"
+                    >
                       {applicant?.freelancer?.firstName}{" "}
                       {applicant?.freelancer?.lastName}
-                    </span>
+                    </Link>
                     <p className="text-xs">
                       Price Offer: {formatCurrency(applicant?.price)}
                     </p>

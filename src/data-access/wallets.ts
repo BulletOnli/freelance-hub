@@ -5,3 +5,37 @@ export const createInstantWallet = async (userId: string) => {
     data: { userId },
   });
 };
+
+export const decrementWalletBalance = async ({
+  amount,
+  userId,
+}: {
+  userId: string;
+  amount: number;
+}) => {
+  return await prisma.wallet.update({
+    where: { userId },
+    data: {
+      balance: {
+        decrement: amount,
+      },
+    },
+  });
+};
+
+export const incrementWalletBalance = async ({
+  amount,
+  userId,
+}: {
+  userId: string;
+  amount: number;
+}) => {
+  return await prisma.wallet.update({
+    where: { userId },
+    data: {
+      balance: {
+        increment: amount,
+      },
+    },
+  });
+};

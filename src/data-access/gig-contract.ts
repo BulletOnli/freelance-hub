@@ -1,5 +1,7 @@
 import { ADMIN_USER_ID } from "@/constants";
 import prisma from "@/lib/prisma";
+import { GIG_CONTRACT_STATUS } from "@prisma/client";
+import { decrementWalletBalance, incrementWalletBalance } from "./wallets";
 
 type CreateGigContract = {
   gigId: string;
@@ -54,15 +56,21 @@ export const createGigContract = async (input: CreateGigContract) => {
   /** 
     Deduct the agreed price to the client's wallet and send it to the admin's wallet
   */
-  await prisma.wallet.update({
-    where: { userId: input.clientId },
-    data: { balance: { decrement: input.price } },
-  });
-
-  await prisma.wallet.update({
-    where: { userId: ADMIN_USER_ID },
-    data: { balance: { increment: input.price } },
-  });
+  await decrementWalletBalance({ userId: input.clientId, amount: input.price });
+  await incrementWalletBalance({ userId: ADMIN_USER_ID, amount: input.price });
 
   return contract;
+};
+
+export const updateContractStatus = async ({
+  contractId,
+  status,
+}: {
+  contractId: string;
+  status: GIG_CONTRACT_STATUS;
+}) => {
+  return await prisma.gigContract.update({
+    where: { id: contractId },
+    data: { status },
+  });
 };

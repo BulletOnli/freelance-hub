@@ -48,13 +48,18 @@ const PdfContract = ({ contract }: { contract: Contract }) => {
   };
 
   return (
-    <Button onClick={generatePDF} disabled={isGeneratingPDF}>
+    <Button
+      onClick={generatePDF}
+      disabled={isGeneratingPDF}
+      variant="outline"
+      size="icon"
+    >
       {isGeneratingPDF ? (
         "Generating..."
       ) : (
         <>
-          <Download className="mr-2 size-5" color="white" />
-          Download PDF
+          <Download className="size-5" />
+          {/* Download PDF */}
         </>
       )}
     </Button>

@@ -107,9 +107,12 @@ const ApplicantDetail = ({ applicant, gigData }: ApplicantDetail) => {
           </AvatarFallback>
         </Avatar>
         <div>
-          <p className="font-semibold">
+          <Link
+            href={`/profile/${applicant?.freelancerId}`}
+            className="font-semibold"
+          >
             {applicant?.freelancer?.firstName} {applicant?.freelancer?.lastName}
-          </p>
+          </Link>
           <p className="text-xs font-medium">
             Price Offer: {formatCurrency(applicant?.price)}
           </p>

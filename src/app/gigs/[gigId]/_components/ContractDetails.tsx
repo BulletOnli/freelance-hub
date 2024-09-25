@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "date-fns";
 import PdfContract from "./PdfContract";
 import { getCurrentUser } from "@/lib/sessions";
+import formatCurrency from "@/utils/formatCurrency";
 
 const ContractDetails = async ({ gigId }: { gigId: string }) => {
   const contract = await getContractDetails(gigId);
@@ -44,7 +45,12 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
     <div className="flex flex-col gap-2">
       <Card className=" w-full mx-auto">
         <CardHeader>
-          <CardTitle className="text-2xl font-bold">Contract Details</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-2xl font-bold">
+              Contract Details
+            </CardTitle>
+            <PdfContract contract={contract} />
+          </div>
         </CardHeader>
         <CardContent id="gig-contract">
           <div className="grid grid-cols-2 gap-4">
@@ -75,7 +81,7 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
             <div>
               <p className="text-sm font-medium text-muted-foreground">Price</p>
               <p className="text-sm font-semibold">
-                ${contract.price.toFixed(2)}
+                {formatCurrency(contract.price)}
               </p>
             </div>
             <div>
@@ -99,8 +105,6 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
           </div>
         </CardContent>
       </Card>
-
-      <PdfContract contract={contract} />
     </div>
   );
 };

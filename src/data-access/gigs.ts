@@ -1,6 +1,5 @@
 import prisma from "@/lib/prisma";
 import { GIG_STATUS } from "@prisma/client";
-import { format, formatISO, parseISO } from "date-fns";
 
 export const getAllGigs = async () => {
   return await prisma.gig.findMany({
@@ -63,6 +62,13 @@ export const getGigDetails = async (gigId: string) => {
         },
       },
     },
+  });
+};
+
+export const getGigStatus = async (gigId: string) => {
+  return await prisma.gig.findUnique({
+    where: { id: gigId },
+    select: { id: true, status: true },
   });
 };
 

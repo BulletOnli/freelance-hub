@@ -23,6 +23,8 @@ import ApplicationButton from "./_components/ApplicationButton";
 import CompleteTransaction from "./_components/CompleteTransaction";
 import ContractDetails from "./_components/ContractDetails";
 import { cn } from "@/lib/utils";
+import NotFound from "@/app/not-found";
+import formatCurrency from "@/utils/formatCurrency";
 
 type Props = {
   params: { gigId: string };
@@ -39,7 +41,7 @@ const GigDetailsPage = async ({ params }: Props) => {
   if (!user) redirect("/login");
 
   const gigData = await getGigDetails(params.gigId);
-  if (!gigData) return;
+  if (!gigData) return <NotFound />;
 
   const { title, description, budget, files, status, userId } = gigData;
 
@@ -89,10 +91,8 @@ const GigDetailsPage = async ({ params }: Props) => {
               <h3 className="font-semibold mb-2">Description</h3>
               <p className="text-muted-foreground mb-4">{description}</p>
               <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center">
-                  <DollarSign className="mr-1 h-5 w-5 text-muted-foreground" />
-                  <span className="text-2xl font-bold">{budget}</span>
-                </div>
+                <p className="text-2xl font-bold">{formatCurrency(budget)}</p>
+
                 <div className="flex items-center text-sm text-muted-foreground">
                   <User className="mr-2 h-4 w-4" />
                   <span>Client ID: {userId}</span>
@@ -112,7 +112,11 @@ const GigDetailsPage = async ({ params }: Props) => {
                 </Button>
               </>
             ) : (
-              <>{status === "ONGOING" && <CompleteTransaction />}</>
+              <>
+                {status === "ONGOING" && (
+                  <CompleteTransaction gigId={params.gigId} />
+                )}
+              </>
             )}
           </CardFooter>
         </Card>

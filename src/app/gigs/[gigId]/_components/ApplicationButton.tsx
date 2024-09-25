@@ -47,6 +47,8 @@ const ApplicationButton = ({ gigData, user }: Props) => {
     }
   }, []);
 
+  if (gigData.status === "DONE") return null;
+
   return (
     <>
       {isAlreadyApplied ? (

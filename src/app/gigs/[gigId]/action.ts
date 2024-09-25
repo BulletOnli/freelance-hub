@@ -1,7 +1,10 @@
 "use server";
-import { updateGigStatus } from "@/data-access/gigs";
+import { getGigStatus, updateGigStatus } from "@/data-access/gigs";
 import {
   applyToGig,
+  getApplicanttionStatus,
+  getApplicationDetail,
+  removeApplication,
   updateApplicationStatus,
 } from "@/data-access/gig-applicants";
 import { getCurrentUser } from "@/lib/sessions";
@@ -10,10 +13,18 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createServerAction } from "zsa";
-import { createGigContract } from "@/data-access/gig-contract";
-import { MINIMUM_GIG_PRICE } from "@/constants";
+import {
+  createGigContract,
+  getContractDetails,
+  updateContractStatus,
+} from "@/data-access/gig-contract";
+import { ADMIN_USER_ID, MINIMUM_GIG_PRICE, TAX_RATE } from "@/constants";
 import prisma from "@/lib/prisma";
 import { isAfter } from "date-fns";
+import {
+  decrementWalletBalance,
+  incrementWalletBalance,
+} from "@/data-access/wallets";
 
 export const applyToGigAction = createServerAction()
   .input(createGigApplicationSchema)
@@ -119,11 +130,17 @@ export const removeApplicationAction = createServerAction()
   )
   .handler(async ({ input }) => {
     try {
-      const res = await prisma.gigApplicant.delete({
-        where: {
-          id: input?.applicationId,
-        },
-      });
+      const { applicationId } = input;
+
+      const application = await getApplicanttionStatus(applicationId);
+      if (!application) throw new Error("Application not found");
+      if (application.status === "ACCEPTED") {
+        throw new Error(
+          "Application is already accepted, please reload the page."
+        );
+      }
+
+      const res = await removeApplication({ applicationId });
 
       revalidatePath(`/gigs/${res?.gigId}`);
     } catch (error) {
@@ -135,4 +152,60 @@ export const removeApplicationAction = createServerAction()
 
       throw error;
     }
+  });
+
+export const confirmTransactionAction = createServerAction()
+  .input(
+    z.object({
+      gigId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const gig = await prisma.gig.findUnique({
+      where: { id: input.gigId },
+      select: {
+        id: true,
+        status: true,
+        contract: {
+          select: { id: true, freelancerId: true, price: true },
+        },
+      },
+    });
+
+    if (!gig) {
+      throw new Error("Gig not found");
+    }
+
+    if (!gig.contract) {
+      throw new Error("There is no contract for this gig");
+    }
+
+    if (gig?.status !== "ONGOING") {
+      throw new Error(`An error occurred, GIG is ${gig?.status}`);
+    }
+
+    const tax = gig.contract.price * TAX_RATE;
+    const totalAmount = gig.contract.price - tax;
+
+    await prisma.$transaction([
+      prisma.gig.update({
+        where: { id: input.gigId },
+        data: { status: "DONE" },
+      }),
+      prisma.gigContract.update({
+        where: { id: gig.contract.id },
+        data: { status: "DONE" },
+      }),
+      // Transfer the money from the admin wallet to the freelancer wallet
+      prisma.wallet.update({
+        where: { userId: ADMIN_USER_ID },
+        data: { balance: { decrement: totalAmount } },
+      }),
+      prisma.wallet.update({
+        where: { userId: gig.contract.freelancerId },
+        data: { balance: { increment: totalAmount } },
+      }),
+    ]);
+
+    revalidatePath(`/gigs/${input.gigId}`);
   });
