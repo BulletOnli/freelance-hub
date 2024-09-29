@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
 import { GIG_STATUS } from "@prisma/client";
 
-export const getAllGigs = async () => {
+export const getAllGigs = async (status?: GIG_STATUS) => {
   return await prisma.gig.findMany({
+    where: { status },
     include: {
       user: {
         select: {

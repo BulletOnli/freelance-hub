@@ -108,7 +108,7 @@ const GigDetailsPage = async ({ params }: Props) => {
                 )}
                 <Button variant="outline" className="w-full">
                   <Mail className="size-5 mr-2" />
-                  Contact Client
+                  Message Client
                 </Button>
               </>
             ) : (

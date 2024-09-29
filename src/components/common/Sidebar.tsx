@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { Button } from "../ui/button";
-import { Home, LayoutDashboard, UserRound } from "lucide-react";
+import { Home, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/providers/SessionProvider";
@@ -26,6 +26,12 @@ const NAV_LINKS = [
     prohibitedRoles: [],
   },
   {
+    icon: MessageCircle,
+    label: "Chat",
+    href: "/chat",
+    prohibitedRoles: [],
+  },
+  {
     icon: UserRound,
     label: "Profile",
     href: "/profile",
@@ -34,7 +40,7 @@ const NAV_LINKS = [
 ];
 
 // Routes that should not display the sidebar
-const INVALID_ROUTES = ["/login", "/signup", "/chat"];
+const INVALID_ROUTES = ["/login", "/signup"];
 
 const Sidebar = () => {
   const { user } = useSession();

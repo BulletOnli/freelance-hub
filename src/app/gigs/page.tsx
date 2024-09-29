@@ -9,7 +9,7 @@ const GigsPage = async () => {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
 
-  const gigs = await getAllGigs();
+  const gigs = await getAllGigs("AVAILABLE");
 
   return (
     <div className="w-full max-w-3xl mx-auto flex flex-1 flex-col gap-8 p-10">

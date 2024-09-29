@@ -14,10 +14,12 @@ export const env = createEnv({
   },
   client: {
     NEXT_PUBLIC_BASE_URL: z.string().min(1),
+    NEXT_PUBLIC_CHAT_SERVER_URL: z.string().min(1),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+    NEXT_PUBLIC_CHAT_SERVER_URL: process.env.NEXT_PUBLIC_CHAT_SERVER_URL,
     DATABASE_URL: process.env.DATABASE_URL,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,

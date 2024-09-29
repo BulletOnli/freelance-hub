@@ -4,7 +4,7 @@ import { getCurrentUser } from "@/lib/sessions";
 import Link from "next/link";
 import { Briefcase } from "lucide-react";
 
-const Navbar = async () => {
+const Header = async () => {
   const user = await getCurrentUser();
 
   return (
@@ -23,4 +23,4 @@ const Navbar = async () => {
   );
 };
 
-export default Navbar;
+export default Header;

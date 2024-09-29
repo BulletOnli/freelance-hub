@@ -8,8 +8,9 @@ import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
 import { Toaster } from "@/components/ui/sonner";
-import Navbar from "@/components/common/Navbar";
+import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,11 +32,13 @@ export default async function RootLayout({
         <GlobalProvider>
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <SessionProvider value={session}>
-            <Navbar />
+            <Header />
             {children}
             <Sidebar />
           </SessionProvider>
           <Toaster />
+
+          <ReactQueryDevtools />
         </GlobalProvider>
       </body>
     </html>

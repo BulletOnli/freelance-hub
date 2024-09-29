@@ -98,9 +98,15 @@ const UserProfilePage = async ({ params }: Props) => {
               <Phone color="white" className="mr-2 size-5" />
               Book now
             </Button>
-            <Button size="sm" className="bg-customDark hover:bg-customDark/95">
-              <Mail color="white" className="mr-2 size-5" />
-              Message
+            <Button
+              asChild
+              size="sm"
+              className="bg-customDark hover:bg-customDark/95"
+            >
+              <Link href={`/chat/${params.userId}`}>
+                <Mail color="white" className="mr-2 size-5" />
+                Message
+              </Link>
             </Button>
           </div>
         </div>
