@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import { User } from "@/types";
 import { socket } from "@/lib/socket";
+import { env } from "@/env";
 
 type Message = {
   id: string;
@@ -32,19 +33,27 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
   const [newMessage, setNewMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
 
-    const newMsg: Message = {
-      id: messages.length + 1 + "",
-      senderId: currentUser?.id,
-      content: newMessage,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      roomKey,
-    };
+    const newMsg = await fetch(
+      `${env.NEXT_PUBLIC_CHAT_SERVER_URL}/api/message/new-message`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          senderId: "66fa56c49b2e78b97b1590c2",
+          senderEmail: "sample@g2mial.com",
+          conversationId: roomKey,
+          content: newMessage,
+        }),
+      }
+    )
+      .then((res) => res.json())
+      .catch((err) => console.error(err));
+
     socket.emit("message", newMsg);
     setMessages((prevMessages) => [...prevMessages, newMsg]);
     setNewMessage("");
