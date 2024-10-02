@@ -36,7 +36,7 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
 
-    const newMsg = await fetch(
+    let newMsg = await fetch(
       `${env.NEXT_PUBLIC_CHAT_SERVER_URL}/api/message/new-message`,
       {
         method: "POST",
@@ -44,15 +44,19 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          senderId: "66fa56c49b2e78b97b1590c2",
-          senderEmail: "sample@g2mial.com",
-          conversationId: roomKey,
+          senderId: currentUser.id,
+          senderEmail: currentUser.email,
+          conversationKey: roomKey,
           content: newMessage,
         }),
       }
     )
       .then((res) => res.json())
       .catch((err) => console.error(err));
+
+    if (newMsg.error) {
+      return console.log(newMsg.error);
+    }
 
     socket.emit("message", newMsg);
     setMessages((prevMessages) => [...prevMessages, newMsg]);
@@ -67,10 +71,6 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
   };
 
   useEffect(() => {
-    if (roomKey) {
-      socket.emit("join", roomKey);
-    }
-
     socket.on("message", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
       console.log("Message received", message);

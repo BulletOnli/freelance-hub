@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Home, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
 import Link from "next/link";
@@ -11,6 +11,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
+import { socket } from "@/lib/socket";
+import { toast } from "sonner";
 
 const NAV_LINKS = [
   {
@@ -46,6 +48,22 @@ const Sidebar = () => {
   const { user } = useSession();
   const pathname = usePathname();
   if (!user || INVALID_ROUTES.includes(pathname)) return null;
+
+  useEffect(() => {
+    if (user.id) {
+      socket.emit("join", user.id);
+      console.log("User joined", user.id);
+    }
+
+    socket.on("message", (message) => {
+      console.log("Message received", message);
+      toast.info("New message received");
+    });
+
+    return () => {
+      socket.off("message");
+    };
+  }, []);
 
   return (
     <div className="fixed left-0 bottom-0 h-full px-6 flex justify-center items-center bg-gradient-to-r from-customDark/5 to-black/0">
