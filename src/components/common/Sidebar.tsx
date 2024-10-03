@@ -57,7 +57,8 @@ const Sidebar = () => {
 
     socket.on("message", (message) => {
       console.log("Message received", message);
-      toast.info("New message received");
+      // todo: update notification UI
+      toast.info(`New message received from ${message?.sender?.userId}`);
     });
 
     return () => {

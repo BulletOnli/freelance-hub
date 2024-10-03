@@ -15,7 +15,7 @@ const ChatRoomPage = async ({ params }: Props) => {
 
   return (
     <div>
-      <ChatRoom currentUser={currentUser} userId={params.userId} />
+      <ChatRoom userId={params.userId} />
     </div>
   );
 };
