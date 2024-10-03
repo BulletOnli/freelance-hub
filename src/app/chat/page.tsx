@@ -1,9 +1,14 @@
+import { getCurrentUser } from "@/lib/sessions";
 import { redirect } from "next/navigation";
 
-const ROOM_KEY = "66fa56879b2e78b97b1590ad";
+const ChatPage = async () => {
+  const user = await getCurrentUser();
 
-const ChatPage = () => {
-  redirect(`/chat/${ROOM_KEY}`);
+  if (!user) {
+    return redirect("/login");
+  }
+
+  redirect(`/chat/${user.id}`);
 };
 
 export default ChatPage;

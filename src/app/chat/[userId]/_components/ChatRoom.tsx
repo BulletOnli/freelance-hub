@@ -7,31 +7,33 @@ import { Send } from "lucide-react";
 import { User } from "@/types";
 import { socket } from "@/lib/socket";
 import { env } from "@/env";
+import { CHAT_API_URL } from "@/constants";
 
-type Message = {
-  id: string;
-  senderId: string;
-  content: string;
-  timestamp: string;
-  roomKey?: string;
+type OtherUser = {
+  userId: string;
+  email?: string;
+  createdAt?: string;
 };
 
-const otherUser = {
-  id: "2",
-  name: "Alice",
-  status: "active",
-  avatar: "/placeholder.svg?height=40&width=40",
+type Message = {
+  _id: string;
+  sender: OtherUser;
+  content: string;
+  createdAt: string;
+  conversation: string;
+  receiver?: OtherUser;
 };
 
 type Props = {
   currentUser: User;
-  roomKey: string;
+  userId: string;
 };
 
-const ChatRoom = ({ currentUser, roomKey }: Props) => {
+const ChatRoom = ({ currentUser, userId }: Props) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const [otherUser, setOtherUser] = useState<OtherUser | null>(null);
 
   const handleSendMessage = async () => {
     if (newMessage.trim() === "") return;
@@ -46,7 +48,9 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
         body: JSON.stringify({
           senderId: currentUser.id,
           senderEmail: currentUser.email,
-          conversationKey: roomKey,
+          receiverId: otherUser?.userId,
+          receiverEmail: otherUser?.email,
+          conversationKey: userId,
           content: newMessage,
         }),
       }
@@ -57,6 +61,8 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
     if (newMsg.error) {
       return console.log(newMsg.error);
     }
+
+    newMsg = { ...newMsg, receiver: { userId } };
 
     socket.emit("message", newMsg);
     setMessages((prevMessages) => [...prevMessages, newMsg]);
@@ -69,6 +75,23 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
         chatContainerRef.current.scrollHeight;
     }
   };
+
+  useEffect(() => {
+    fetch(`${CHAT_API_URL}/user/${userId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setOtherUser(data);
+      });
+
+    fetch(
+      `${CHAT_API_URL}/message/all?receiverId=${userId}&senderId=${currentUser.id}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setMessages(data);
+      });
+  }, []);
 
   useEffect(() => {
     socket.on("message", (message) => {
@@ -93,10 +116,10 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
           className="h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar pr-4"
         >
           {messages.map((message) => {
-            const isCurrentUser = message.senderId === currentUser.id;
+            const isCurrentUser = message.sender?.userId === currentUser.id;
             return (
               <div
-                key={message.id}
+                key={message._id}
                 className={`flex mb-4 ${
                   isCurrentUser ? "justify-end" : "justify-start"
                 }`}
@@ -114,13 +137,13 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
                           alt={
                             isCurrentUser
                               ? currentUser?.firstName
-                              : otherUser.name
+                              : otherUser?.email
                           }
                         />
                         <AvatarFallback>
                           {isCurrentUser
                             ? currentUser?.firstName[0]
-                            : otherUser.name[0]}
+                            : otherUser?.email?.[0]}
                         </AvatarFallback>
                       </Avatar>
                     </>
@@ -142,7 +165,7 @@ const ChatRoom = ({ currentUser, roomKey }: Props) => {
                         isCurrentUser ? "text-blue-100" : "text-gray-500"
                       }`}
                     >
-                      {message.timestamp}
+                      {message.createdAt}
                     </div>
                   </div>
                 </div>
