@@ -1,24 +1,24 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { OtherUser } from "./ChatRoom";
+import { ChatUser } from "./ChatRoom";
 import { useSession } from "@/providers/SessionProvider";
 import { format } from "date-fns";
 
 export type Message = {
   _id: string;
-  sender: OtherUser;
+  sender: ChatUser;
   content: string;
   createdAt: string;
   conversation: string;
-  receiver?: OtherUser;
+  receiver?: ChatUser;
 };
 
 type Props = {
-  otherUser: OtherUser | null;
+  receiver: ChatUser | null;
   message: Message;
 };
 
-const MessageBox = ({ message, otherUser }: Props) => {
+const MessageBox = ({ message, receiver }: Props) => {
   const { user: currentUser } = useSession();
   const isCurrentUser = message.sender?.userId === currentUser?.id;
 
@@ -34,13 +34,13 @@ const MessageBox = ({ message, otherUser }: Props) => {
         {!isCurrentUser && (
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={undefined}
-              alt={isCurrentUser ? currentUser?.firstName : otherUser?.email}
+              src="https://github.com/shadcn.png"
+              alt="User avatar"
             />
             <AvatarFallback>
               {isCurrentUser
                 ? currentUser?.firstName[0]
-                : otherUser?.email?.[0]}
+                : receiver?.userId?.[0]}
             </AvatarFallback>
           </Avatar>
         )}

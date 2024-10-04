@@ -7,13 +7,13 @@ import { socket } from "@/lib/socket";
 import { env } from "@/env";
 import { CHAT_API_URL } from "@/constants";
 import Messages from "./Messages";
-import { useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "@/providers/SessionProvider";
+import Loading from "@/app/loading";
 
-// Other user is user from chat service database
-export type OtherUser = {
+export type ChatUser = {
+  _id?: string;
   userId: string;
-  email?: string;
   createdAt?: string;
 };
 
@@ -30,8 +30,33 @@ const ChatRoom = ({ userId }: Props) => {
   const { user: currentUser } = useSession();
   const queryClient = useQueryClient();
   const [newMessage, setNewMessage] = useState("");
-  // Other user is user from chat service database
-  const [otherUser, setOtherUser] = useState<OtherUser | null>(null);
+  const [receiver, setReceiver] = useState<ChatUser | null>(null);
+
+  const conversation = useQuery({
+    queryKey: ["conversation", currentUser?.id, userId],
+    queryFn: async () => {
+      const response = await fetch(`${CHAT_API_URL}/conversation/create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          senderId: currentUser?.id,
+          receiverId: userId,
+        }),
+      });
+
+      const responseJson = await response.json();
+      const receiver = responseJson?.participants?.find(
+        (p: ChatUser) => p.userId !== currentUser?.id
+      );
+
+      setReceiver(receiver || null);
+      console.log("Chat initialized", receiver);
+      return receiver;
+    },
+    enabled: !!currentUser?.id && !!userId,
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  });
 
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return;
@@ -39,9 +64,7 @@ const ChatRoom = ({ userId }: Props) => {
     try {
       const messagePayload = {
         senderId: currentUser?.id,
-        senderEmail: currentUser?.email,
-        receiverId: otherUser?.userId,
-        receiverEmail: otherUser?.email,
+        receiverId: receiver?.userId || userId,
         conversationKey: userId,
         content: newMessage,
       };
@@ -71,13 +94,6 @@ const ChatRoom = ({ userId }: Props) => {
   };
 
   useEffect(() => {
-    const initializeChat = async () => {
-      const userData = await fetchUserData(userId);
-      setOtherUser(userData);
-    };
-
-    initializeChat();
-
     socket.on("message", (message) => {
       queryClient.invalidateQueries({
         queryKey: ["messages", userId],
@@ -87,11 +103,15 @@ const ChatRoom = ({ userId }: Props) => {
     return () => {
       socket.off("message");
     };
-  }, [userId, currentUser?.id]);
+  }, [userId, queryClient]);
+
+  if (conversation.isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="w-2/3 space-y-2 mx-auto p-4">
-      <Messages otherUser={otherUser} />
+      <Messages receiver={receiver} />
       <div className="flex-1 overflow-hidden"></div>
 
       <div className="flex w-full items-center space-x-2">

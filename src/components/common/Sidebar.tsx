@@ -64,7 +64,7 @@ const Sidebar = () => {
     return () => {
       socket.off("message");
     };
-  }, []);
+  }, [user?.id]);
 
   return (
     <div className="fixed left-0 bottom-0 h-full px-6 flex justify-center items-center bg-gradient-to-r from-customDark/5 to-black/0">
