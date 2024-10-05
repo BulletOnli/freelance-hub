@@ -40,8 +40,14 @@ const Messages = ({ receiver }: Props) => {
   return (
     <div
       ref={chatContainerRef}
-      className="h-[calc(100vh-12rem)] overflow-y-auto custom-scrollbar pr-4"
+      className="h-[calc(100vh-12rem)] flex flex-col justify-end overflow-y-auto custom-scrollbar pr-4"
     >
+      {messages?.data?.length === 0 && (
+        <p className="text-center my-auto text-customGray">
+          Start a conversation
+        </p>
+      )}
+
       {messages?.data?.map((message) => (
         <MessageBox key={message._id} message={message} receiver={receiver} />
       ))}

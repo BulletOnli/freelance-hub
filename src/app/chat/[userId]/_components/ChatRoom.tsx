@@ -121,6 +121,7 @@ const ChatRoom = ({ userId }: Props) => {
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+          autoFocus
         />
         <Button size="icon" onClick={handleSendMessage}>
           <Send className="h-4 w-4" color="white" />

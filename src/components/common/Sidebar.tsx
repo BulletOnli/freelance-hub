@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Button } from "../ui/button";
 import { Home, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { RedirectType, usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/providers/SessionProvider";
 import {
   Tooltip,
@@ -47,6 +47,7 @@ const INVALID_ROUTES = ["/login", "/signup"];
 const Sidebar = () => {
   const { user } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
   if (!user || INVALID_ROUTES.includes(pathname)) return null;
 
   useEffect(() => {
@@ -56,9 +57,16 @@ const Sidebar = () => {
     }
 
     socket.on("message", (message) => {
-      console.log("Message received", message);
+      console.log("New message recieve", message);
       // todo: update notification UI
-      toast.info(`New message received from ${message?.sender?.userId}`);
+      toast.message("💬 [Sender's Name] sent you a message!", {
+        description: "Don't let this message go cold!",
+        action: {
+          label: "View",
+          onClick: () => router.push(`/chat/${message?.sender?.userId}`),
+        },
+        duration: 30_000,
+      });
     });
 
     return () => {

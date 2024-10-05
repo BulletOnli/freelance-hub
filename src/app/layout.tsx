@@ -36,7 +36,7 @@ export default async function RootLayout({
             {children}
             <Sidebar />
           </SessionProvider>
-          <Toaster />
+          <Toaster closeButton />
 
           <ReactQueryDevtools />
         </GlobalProvider>
