@@ -110,17 +110,19 @@ const GigCard = async ({ gig }: Props) => {
             </Button>
           </Link>
         )}
-        <Button
-          asChild
-          variant="outline"
-          className="rounded-full px-4"
-          size="sm"
-        >
-          <Link href={`/chat/${gig.userId}`}>
-            <Mail className="mr-2 size-5" />
-            Message
-          </Link>
-        </Button>
+        {user?.id !== gig?.userId && (
+          <Button
+            asChild
+            variant="outline"
+            className="rounded-full px-4"
+            size="sm"
+          >
+            <Link href={`/chat/${gig.userId}`}>
+              <Mail className="mr-2 size-5" />
+              Message
+            </Link>
+          </Button>
+        )}
         <Button variant="outline" className="rounded-full px-4" size="sm">
           <Send className="mr-2 size-5" />
           Share

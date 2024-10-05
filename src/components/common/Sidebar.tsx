@@ -57,8 +57,6 @@ const Sidebar = () => {
     }
 
     socket.on("message", (message) => {
-      console.log("New message recieve", message);
-      // todo: update notification UI
       toast.message("💬 [Sender's Name] sent you a message!", {
         description: "Don't let this message go cold!",
         action: {

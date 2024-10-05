@@ -50,7 +50,8 @@
     "zod": "^3.23.8",
     "zsa": "^0.6.0",
     "zsa-react": "^0.2.2",
-    "zsa-react-query": "^0.2.1"
+    "zsa-react-query": "^0.2.1",
+    "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
     "@types/node": "20.14.15",

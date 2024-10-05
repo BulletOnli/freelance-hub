@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import GigCard from "./_components/GigCard";
 import { getCurrentUser } from "@/lib/sessions";
 import { redirect } from "next/navigation";
@@ -12,17 +12,28 @@ const GigsPage = async () => {
   const gigs = await getAllGigs("AVAILABLE");
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-1 flex-col gap-8 p-10">
-      {user.role === "CLIENT" && <CreateGigModal user={user} />}
-
-      {gigs?.map((gig) => (
-        <GigCard key={gig.id} gig={gig} />
+    <div className="w-full max-w-3xl mx-auto flex flex-1 flex-col gap-6 p-10">
+      {gigs?.map((gig, index) => (
+        <Fragment key={gig.id}>
+          <GigCard gig={gig} />
+          {index < gigs.length - 1 && (
+            <div className="w-full h-px bg-customLightGray/50"></div>
+          )}
+        </Fragment>
       ))}
 
       {gigs?.length === 0 && (
         <p className="text-sm text-customGray text-center uppercase">
           No available gigs
         </p>
+      )}
+
+      {user.role === "CLIENT" && (
+        <div className="w-full fixed bottom-0 left-0 bg-gradient-to-t from-white to-white/0 p-6">
+          <div className="w-full max-w-3xl mx-auto">
+            <CreateGigModal user={user} />
+          </div>
+        </div>
       )}
     </div>
   );

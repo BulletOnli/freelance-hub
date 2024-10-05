@@ -1,11 +1,12 @@
 "use client";
-import { ChatUser } from "./ChatRoom";
 import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CHAT_API_URL } from "@/constants";
 import { useSession } from "@/providers/SessionProvider";
 import MessageBox, { type Message } from "./MessageBox";
+import Loading from "@/app/loading";
+import { ChatUser } from "@/stores/chatStore";
 
 type Props = {
   receiver: ChatUser | null;
@@ -37,20 +38,23 @@ const Messages = ({ receiver }: Props) => {
     scrollToBottom();
   }, [messages]);
 
+  if (messages.isLoading) {
+    return <Loading />;
+  }
+
   return (
-    <div
-      ref={chatContainerRef}
-      className="h-[calc(100vh-12rem)] flex flex-col justify-end overflow-y-auto custom-scrollbar pr-4"
-    >
+    <div className="h-[calc(100vh-12rem)] flex flex-col justify-end pr-4">
       {messages?.data?.length === 0 && (
         <p className="text-center my-auto text-customGray">
           Start a conversation
         </p>
       )}
 
-      {messages?.data?.map((message) => (
-        <MessageBox key={message._id} message={message} receiver={receiver} />
-      ))}
+      <div ref={chatContainerRef} className="overflow-y-auto custom-scrollbar">
+        {messages?.data?.map((message) => (
+          <MessageBox key={message._id} message={message} receiver={receiver} />
+        ))}
+      </div>
     </div>
   );
 };

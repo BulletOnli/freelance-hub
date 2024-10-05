@@ -1,97 +1,45 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
 import { socket } from "@/lib/socket";
-import { env } from "@/env";
-import { CHAT_API_URL } from "@/constants";
 import Messages from "./Messages";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "@/providers/SessionProvider";
-import Loading from "@/app/loading";
-
-export type ChatUser = {
-  _id?: string;
-  userId: string;
-  createdAt?: string;
-};
+import { useQueryClient } from "@tanstack/react-query";
+import { User } from "@/types";
+import { useChatStore } from "@/stores/chatStore";
 
 type Props = {
   userId: string;
+  currentUser: User;
 };
 
-const fetchUserData = async (userId: string) => {
-  const response = await fetch(`${CHAT_API_URL}/user/${userId}`);
-  return response.json();
-};
-
-const ChatRoom = ({ userId }: Props) => {
-  const { user: currentUser } = useSession();
+const ChatRoom = ({ userId, currentUser }: Props) => {
   const queryClient = useQueryClient();
-  const [newMessage, setNewMessage] = useState("");
-  const [receiver, setReceiver] = useState<ChatUser | null>(null);
-
-  const conversation = useQuery({
-    queryKey: ["conversation", currentUser?.id, userId],
-    queryFn: async () => {
-      const response = await fetch(`${CHAT_API_URL}/conversation/create`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          senderId: currentUser?.id,
-          receiverId: userId,
-        }),
-      });
-
-      const responseJson = await response.json();
-      const receiver = responseJson?.participants?.find(
-        (p: ChatUser) => p.userId !== currentUser?.id
-      );
-
-      setReceiver(receiver || null);
-      console.log("Chat initialized", receiver);
-      return receiver;
-    },
-    enabled: !!currentUser?.id && !!userId,
-    staleTime: 1000 * 60 * 5,
-    retry: 1,
-  });
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const { receiver, initializeChat, sendMessage } = useChatStore();
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim()) return;
+    if (!inputRef.current) return;
+    const newMessage = inputRef.current?.value;
 
-    try {
-      const messagePayload = {
-        senderId: currentUser?.id,
-        receiverId: receiver?.userId || userId,
-        conversationKey: userId,
-        content: newMessage,
-      };
+    await sendMessage({
+      senderId: currentUser?.id,
+      message: newMessage,
+    });
 
-      const newMsg = await fetch(
-        `${env.NEXT_PUBLIC_CHAT_SERVER_URL}/api/message/new-message`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(messagePayload),
-        }
-      ).then((res) => res.json());
-
-      if (newMsg.error) {
-        console.error(newMsg.error);
-        return;
-      }
-
-      socket.emit("message", { ...newMsg, receiver: { userId } });
-      queryClient.invalidateQueries({
-        queryKey: ["messages", userId],
-      });
-      setNewMessage("");
-    } catch (error) {
-      console.error("Failed to send message", error);
-    }
+    queryClient.invalidateQueries({
+      queryKey: ["messages", receiver?.userId],
+    });
+    inputRef.current.value = "";
   };
+
+  useEffect(() => {
+    if (receiver?.userId !== userId && currentUser?.id) {
+      console.log("hi");
+      initializeChat(currentUser?.id, userId);
+    }
+  }, []);
 
   useEffect(() => {
     socket.on("message", (message) => {
@@ -105,10 +53,6 @@ const ChatRoom = ({ userId }: Props) => {
     };
   }, [userId, queryClient]);
 
-  if (conversation.isLoading) {
-    return <Loading />;
-  }
-
   return (
     <div className="w-2/3 space-y-2 mx-auto p-4">
       <Messages receiver={receiver} />
@@ -118,8 +62,7 @@ const ChatRoom = ({ userId }: Props) => {
         <Input
           type="text"
           placeholder="Type your message..."
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
+          ref={inputRef}
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           autoFocus
         />
