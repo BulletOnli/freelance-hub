@@ -1,4 +1,7 @@
-import { getAllTransactionsByMonth } from "@/data-access/transactions";
+import {
+  getAllTransactions,
+  getAllTransactionsByMonth,
+} from "@/data-access/transactions";
 import { getCurrentUser } from "@/lib/sessions";
 import { z } from "zod";
 import { createServerAction } from "zsa";
@@ -43,4 +46,20 @@ export const getMonthlyEarningsAction = createServerAction()
     );
 
     return { earningsThisMonth, earningsLastMonth };
+  });
+
+export const getAllTransactionsAction = createServerAction()
+  .input(
+    z.object({
+      walletId: z.string(),
+    })
+  )
+  .handler(async ({ input }) => {
+    const { walletId } = input;
+    const user = await getCurrentUser();
+    if (!user) throw new Error("Please login first");
+
+    const transactions = await getAllTransactions(walletId);
+
+    return transactions;
   });

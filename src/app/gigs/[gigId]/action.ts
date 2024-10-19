@@ -229,7 +229,7 @@ export const confirmTransactionAction = createServerAction()
 
     // Create a transaction receipt for the admin
     await createTransaction({
-      description: "Tax for gig",
+      description: "Transaction fee",
       amount: tax,
       type: "DEBIT",
       status: "SUCCESS",

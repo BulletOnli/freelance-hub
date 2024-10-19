@@ -9,8 +9,8 @@ const OngoingGigs = async ({ user }: { user: User }) => {
   const contracts = await getAllContracts("ONGOING", user?.id);
 
   return (
-    <div className="space-y-4">
-      <p className="text-2xl font-bold">Ongoing Gigs</p>
+    <div className="space-y-4 h-full p-4 shadow rounded-lg">
+      <p className="font-medium">Ongoing Gigs</p>
 
       <div className="space-y-4">
         {contracts?.length === 0 && (

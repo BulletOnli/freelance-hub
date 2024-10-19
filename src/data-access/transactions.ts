@@ -4,6 +4,13 @@ import {
   WALLET_TRANSACTION_TYPE,
 } from "@prisma/client";
 
+export const getAllTransactions = async (walletId: string) => {
+  return await prisma.walletTransaction.findMany({
+    orderBy: { createdAt: "desc" },
+    where: { walletId },
+  });
+};
+
 export const getAllTransactionsByMonth = async ({
   walletId,
   status,
