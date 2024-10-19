@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "docker:run": "docker compose --env-file .env.production up --build"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

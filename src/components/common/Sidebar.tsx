@@ -1,7 +1,13 @@
 "use client";
 import React, { useEffect } from "react";
 import { Button } from "../ui/button";
-import { Home, LayoutDashboard, MessageCircle, UserRound } from "lucide-react";
+import {
+  BriefcaseBusiness,
+  Home,
+  LayoutDashboard,
+  MessageCircle,
+  UserRound,
+} from "lucide-react";
 import Link from "next/link";
 import { RedirectType, usePathname, useRouter } from "next/navigation";
 import { useSession } from "@/providers/SessionProvider";
@@ -13,31 +19,32 @@ import {
 } from "../ui/tooltip";
 import { socket } from "@/lib/socket";
 import { toast } from "sonner";
+import { UserRole } from "@prisma/client";
 
 const NAV_LINKS = [
   {
-    icon: Home,
-    label: "Home",
-    href: "/",
-    prohibitedRoles: [],
+    icon: LayoutDashboard,
+    label: "Dashboard",
+    href: "/dashboard",
+    prohibitedRoles: [] as UserRole[],
   },
   {
-    icon: LayoutDashboard,
+    icon: BriefcaseBusiness,
     label: "Gigs",
     href: "/gigs",
-    prohibitedRoles: [],
+    prohibitedRoles: [] as UserRole[],
   },
   {
     icon: MessageCircle,
     label: "Chat",
     href: "/chat",
-    prohibitedRoles: [],
+    prohibitedRoles: [] as UserRole[],
   },
   {
     icon: UserRound,
     label: "Profile",
     href: "/profile",
-    prohibitedRoles: ["CLIENT"],
+    prohibitedRoles: ["CLIENT"] as UserRole[],
   },
 ];
 
@@ -48,12 +55,11 @@ const Sidebar = () => {
   const { user } = useSession();
   const pathname = usePathname();
   const router = useRouter();
-  if (!user || INVALID_ROUTES.includes(pathname)) return null;
 
   useEffect(() => {
-    if (user.id) {
-      socket.emit("join", user.id);
-      console.log("User joined", user.id);
+    if (user?.id) {
+      socket.emit("join", user?.id);
+      console.log("User joined", user?.id);
     }
 
     socket.on("message", (message) => {
@@ -70,7 +76,9 @@ const Sidebar = () => {
     return () => {
       socket.off("message");
     };
-  }, [user?.id]);
+  }, [user]);
+
+  if (!user || INVALID_ROUTES.includes(pathname)) return null;
 
   return (
     <div className="fixed left-0 bottom-0 h-full px-6 flex justify-center items-center bg-gradient-to-r from-customDark/5 to-black/0">

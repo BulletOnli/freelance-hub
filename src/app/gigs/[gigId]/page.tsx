@@ -25,6 +25,7 @@ import ContractDetails from "./_components/ContractDetails";
 import { cn } from "@/lib/utils";
 import NotFound from "@/app/not-found";
 import formatCurrency from "@/utils/formatCurrency";
+import Link from "next/link";
 
 type Props = {
   params: { gigId: string };
@@ -55,6 +56,8 @@ const GigDetailsPage = async ({ params }: Props) => {
         "container  mx-auto flex flex-col gap-8 px-4 py-8"
       )}
     >
+      <ContractDetails gigId={params.gigId} />
+
       <div className="flex justify-center gap-4">
         <Card className="w-full h-fit overflow-hidden">
           <CardHeader>
@@ -106,9 +109,11 @@ const GigDetailsPage = async ({ params }: Props) => {
                 {user?.role === "FREELANCER" && (
                   <ApplicationButton gigData={gigData} user={user} />
                 )}
-                <Button variant="outline" className="w-full">
-                  <Mail className="size-5 mr-2" />
-                  Message Client
+                <Button asChild variant="outline" className="w-full">
+                  <Link href={`/chat/${userId}`}>
+                    <Mail className="size-5 mr-2" />
+                    Message Client
+                  </Link>
                 </Button>
               </>
             ) : (
@@ -125,8 +130,6 @@ const GigDetailsPage = async ({ params }: Props) => {
           <GigApplicants gigData={gigData} />
         )}
       </div>
-
-      <ContractDetails gigId={params.gigId} />
     </div>
   );
 };

@@ -24,16 +24,11 @@ type Props = {
 
 const GigCard = async ({ gig }: Props) => {
   const user = await getCurrentUser();
-  const isPastDeadline = isAfter(new Date(), gig?.deadline);
 
   const isAlreadyApplied = gig?.applicants?.some(
     (applicant) =>
       applicant.freelancer?.id === user?.id && applicant.status === "PENDING"
   );
-
-  // If the gig is available and the deadline has passed, set the status to EXPIRED
-  const status =
-    gig?.status === "AVAILABLE" && isPastDeadline ? "EXPIRED" : gig?.status;
 
   return (
     <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
@@ -63,7 +58,7 @@ const GigCard = async ({ gig }: Props) => {
       </div>
 
       <Badge className="w-fit text-[12px]" variant="outline">
-        {status}
+        {gig.status}
       </Badge>
 
       <Link href={`/gigs/${gig?.id}`}>
@@ -90,19 +85,14 @@ const GigCard = async ({ gig }: Props) => {
             href={{
               pathname: `/gigs/${gig?.id}`,
               query: {
-                isOpen:
-                  !isAlreadyApplied &&
-                  !isPastDeadline &&
-                  status === "AVAILABLE",
+                isOpen: !isAlreadyApplied && gig.status === "AVAILABLE",
               },
             }}
           >
             <Button
               className="rounded-full px-4"
               size="sm"
-              disabled={
-                gig.status !== "AVAILABLE" || isPastDeadline || isAlreadyApplied
-              }
+              disabled={gig.status !== "AVAILABLE" || isAlreadyApplied}
             >
               <BriefcaseBusiness className="mr-2 size-5" color="white" />
 

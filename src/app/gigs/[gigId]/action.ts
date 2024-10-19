@@ -18,13 +18,19 @@ import {
   getContractDetails,
   updateContractStatus,
 } from "@/data-access/gig-contract";
-import { ADMIN_USER_ID, MINIMUM_GIG_PRICE, TAX_RATE } from "@/constants";
+import {
+  ADMIN_USER_ID,
+  ADMIN_WALLET_ID,
+  MINIMUM_GIG_PRICE,
+  TAX_RATE,
+} from "@/constants";
 import prisma from "@/lib/prisma";
 import { isAfter } from "date-fns";
 import {
   decrementWalletBalance,
   incrementWalletBalance,
 } from "@/data-access/wallets";
+import { createTransaction } from "@/data-access/transactions";
 
 export const applyToGigAction = createServerAction()
   .input(createGigApplicationSchema)
@@ -167,7 +173,11 @@ export const confirmTransactionAction = createServerAction()
         id: true,
         status: true,
         contract: {
-          select: { id: true, freelancerId: true, price: true },
+          select: {
+            id: true,
+            freelancer: { include: { wallet: { select: { id: true } } } },
+            price: true,
+          },
         },
       },
     });
@@ -201,11 +211,30 @@ export const confirmTransactionAction = createServerAction()
         where: { userId: ADMIN_USER_ID },
         data: { balance: { decrement: totalAmount } },
       }),
+      // Increment the freelancer wallet balance
       prisma.wallet.update({
-        where: { userId: gig.contract.freelancerId },
+        where: { userId: gig.contract.freelancer.id },
         data: { balance: { increment: totalAmount } },
       }),
     ]);
+
+    // Create a transaction receipt for the freelancer
+    await createTransaction({
+      description: "Received payment for gig",
+      amount: gig.contract.price - tax,
+      type: "DEBIT",
+      status: "SUCCESS",
+      walletId: gig.contract.freelancer.wallet!.id,
+    });
+
+    // Create a transaction receipt for the admin
+    await createTransaction({
+      description: "Tax for gig",
+      amount: tax,
+      type: "DEBIT",
+      status: "SUCCESS",
+      walletId: ADMIN_WALLET_ID,
+    });
 
     revalidatePath(`/gigs/${input.gigId}`);
   });

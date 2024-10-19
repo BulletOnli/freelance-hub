@@ -18,6 +18,7 @@ import { z } from "zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,8 +28,9 @@ import { useServerAction } from "zsa-react";
 import { createGigApplicationSchema } from "@/lib/validation";
 import { toast } from "sonner";
 import { Applicant, ModifiedGig } from "@/types";
-import { MINIMUM_GIG_PRICE } from "@/constants";
+import { MINIMUM_GIG_PRICE, TAX_RATE } from "@/constants";
 import { applyToGigAction } from "@/app/gigs/[gigId]/action";
+import formatCurrency from "@/utils/formatCurrency";
 
 type FormValues = z.infer<typeof createGigApplicationSchema>;
 
@@ -72,6 +74,10 @@ export default function ApplicationModal({
     form.reset();
   };
 
+  if (gigData?.status !== "AVAILABLE") return null;
+
+  const taxAmount = form.getValues("price") * TAX_RATE;
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -103,6 +109,13 @@ export default function ApplicationModal({
                     />
                   </FormControl>
                   <FormMessage />
+                  <FormDescription>
+                    You will receive{" "}
+                    <span>
+                      {formatCurrency(form.getValues("price") - taxAmount)}
+                    </span>{" "}
+                    (-{TAX_RATE * 100}% Tax).
+                  </FormDescription>
                 </FormItem>
               )}
             />

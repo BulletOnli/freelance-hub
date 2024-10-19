@@ -15,6 +15,8 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.string().min(1),
     NEXT_PUBLIC_CHAT_SERVER_URL: z.string().min(1),
+    NEXT_PUBLIC_ADMIN_USER_ID: z.string().min(1),
+    NEXT_PUBLIC_ADMIN_WALLET_ID: z.string().min(1),
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
@@ -27,5 +29,7 @@ export const env = createEnv({
     GOOGLE_SECRET: process.env.GOOGLE_SECRET,
     UPLOADTHING_SECRET: process.env.UPLOADTHING_SECRET,
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
+    NEXT_PUBLIC_ADMIN_USER_ID: process.env.NEXT_PUBLIC_ADMIN_USER_ID,
+    NEXT_PUBLIC_ADMIN_WALLET_ID: process.env.NEXT_PUBLIC_ADMIN_WALLET_ID,
   },
 });

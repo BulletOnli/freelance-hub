@@ -20,9 +20,8 @@ enum UserRole {
 }
 
 enum WALLET_TRANSACTION_TYPE {
-  CASH_OUT
-  CASH_IN
-  PAY_BILLS
+  DEBIT
+  CREDIT
 }
 
 enum WALLET_TRANSACTION_STATUS {
@@ -110,13 +109,14 @@ model Wallet {
 }
 
 model WalletTransaction {
-  id        String                    @id @default(uuid())
-  walletId  String
-  type      WALLET_TRANSACTION_TYPE
-  amount    Float
-  status    WALLET_TRANSACTION_STATUS @default(PENDING)
-  createdAt DateTime                  @default(now())
-  updatedAt DateTime                  @updatedAt
+  id          String                    @id @default(uuid())
+  walletId    String
+  type        WALLET_TRANSACTION_TYPE
+  amount      Float
+  description String
+  status      WALLET_TRANSACTION_STATUS @default(PENDING)
+  createdAt   DateTime                  @default(now())
+  updatedAt   DateTime                  @updatedAt
 
   wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
 

@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ChatUser } from "./ChatRoom";
 import { useSession } from "@/providers/SessionProvider";
+import { ChatUser } from "@/stores/chatStore";
 import { format } from "date-fns";
 
 export type Message = {

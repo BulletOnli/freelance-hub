@@ -9,7 +9,7 @@ export default async function AuthLayout({
 }) {
   const user = await getCurrentUser();
 
-  if (user) redirect("/");
+  if (user) redirect("/dashboard");
 
   return (
     <div className="w-full min-h-[calc(100vh-68px)] grid grid-cols-1 md:grid-cols-2">
