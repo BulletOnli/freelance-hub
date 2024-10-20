@@ -16,6 +16,7 @@ import { useServerAction } from "zsa-react";
 import { loginAction } from "../action";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const LoginForm = () => {
   const { isPending, execute } = useServerAction(loginAction);
@@ -48,7 +49,11 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input type="email" placeholder="shadcn" {...field} />
+                <Input
+                  type="email"
+                  placeholder="Enter your email address"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -62,16 +67,39 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input type="password" placeholder="shadcn" {...field} />
+                <Input
+                  type="password"
+                  placeholder="Enter password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        <div className="my-2 text-sm flex items-center justify-end">
+          <Link
+            href="/reset-password"
+            className="text-customDark hover:underline"
+          >
+            Forgot password?
+          </Link>
+        </div>
+
         <Button disabled={isPending} type="submit">
-          Submit
+          Log In
         </Button>
+
+        <div className="text-sm text-center mt-4">
+          Don't have an account?{" "}
+          <Link
+            href="/register"
+            className="font-medium text-customDark hover:underline"
+          >
+            Register here
+          </Link>
+        </div>
       </form>
     </Form>
   );

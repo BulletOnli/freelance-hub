@@ -49,7 +49,7 @@ const NAV_LINKS = [
 ];
 
 // Routes that should not display the sidebar
-const INVALID_ROUTES = ["/login", "/signup"];
+const INVALID_ROUTES = ["/login", "/register"];
 
 const Sidebar = () => {
   const { user } = useSession();

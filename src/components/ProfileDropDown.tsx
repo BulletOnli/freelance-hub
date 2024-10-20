@@ -9,11 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HandCoins, History, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
-import { logoutAction } from "@/lib/sessions";
+import { getCurrentUser, logoutAction } from "@/lib/sessions";
 import { User } from "@/types";
 import formatCurrency from "@/utils/formatCurrency";
 
-const ProfileDropDown = ({ user }: { user: User | null }) => {
+const ProfileDropDown = async () => {
+  const user = await getCurrentUser();
+
   if (!user) {
     return (
       <Button size="sm" asChild>

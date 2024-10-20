@@ -1,11 +1,15 @@
-import React from "react";
-import ProfileDropDown from "../ProfileDropDown";
-import { getCurrentUser } from "@/lib/sessions";
+"use client";
+import React, { PropsWithChildren } from "react";
 import Link from "next/link";
 import { Briefcase } from "lucide-react";
+import { usePathname } from "next/navigation";
 
-const Header = async () => {
-  const user = await getCurrentUser();
+const AUTH_ROUTES = ["/login", "/register"];
+
+const Header = ({ children }: PropsWithChildren) => {
+  const pathname = usePathname();
+
+  if (AUTH_ROUTES.includes(pathname)) return null;
 
   return (
     <div className="sticky top-0 z-50 w-full py-4 bg-customDark">
@@ -17,7 +21,7 @@ const Header = async () => {
           </span>
         </Link>
 
-        <ProfileDropDown user={user} />
+        {children}
       </div>
     </div>
   );

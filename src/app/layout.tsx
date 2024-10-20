@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import ProfileDropDown from "@/components/ProfileDropDown";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +33,7 @@ export default async function RootLayout({
         <GlobalProvider>
           <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
           <SessionProvider value={session}>
-            <Header />
+            <Header children={<ProfileDropDown />} />
             {children}
             <Sidebar />
           </SessionProvider>
