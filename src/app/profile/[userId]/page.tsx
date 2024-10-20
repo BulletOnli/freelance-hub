@@ -28,10 +28,10 @@ const UserProfilePage = async ({ params }: Props) => {
   if (data.role === "CLIENT") redirect("/", RedirectType.replace);
 
   return (
-    <div className="container mx-auto p-10 flex items-center">
+    <div className="container mx-auto p-4 sm:p-10 flex items-center">
       <div className="w-full flex flex-col gap-16">
-        <div className="w-full flex items-center justify-between">
-          <div className="flex items-center gap-6">
+        <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col lg:flex-row items-center gap-6">
             <Avatar className="size-40 text-4xl">
               <AvatarImage src={data?.profilePicture || undefined} />
               <AvatarFallback className="border border-customOrange text-darkGray font-semibold">
@@ -43,7 +43,7 @@ const UserProfilePage = async ({ params }: Props) => {
                 <MapPin className="size-5" />
                 <p>Philippines</p>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4">
                 <p className="text-2xl font-semibold">
                   {data?.firstName} {data?.lastName}
                 </p>
@@ -82,7 +82,7 @@ const UserProfilePage = async ({ params }: Props) => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="w-full md:w-auto flex flex-col gap-2">
             <div className="flex items-center gap-6">
               <Badge className="bg-green-600 hover:bg-green-600 select-none">
                 <BadgeCheck color="white" className="size-4 mr-1" />

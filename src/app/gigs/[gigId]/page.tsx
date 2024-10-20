@@ -58,7 +58,7 @@ const GigDetailsPage = async ({ params }: Props) => {
     >
       <ContractDetails gigId={params.gigId} />
 
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-center gap-4">
         <Card className="w-full h-fit overflow-hidden">
           <CardHeader>
             <CardTitle className="text-2xl md:text-3xl font-bold">

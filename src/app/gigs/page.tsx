@@ -12,7 +12,7 @@ const GigsPage = async () => {
   const gigs = await getAllGigs("AVAILABLE");
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-1 flex-col gap-6 p-10">
+    <div className="w-full max-w-3xl mx-auto flex flex-1 flex-col gap-6 p-4 sm:p-10">
       {gigs?.map((gig, index) => (
         <Fragment key={gig.id}>
           <GigCard gig={gig} />

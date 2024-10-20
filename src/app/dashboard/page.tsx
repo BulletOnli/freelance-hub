@@ -15,13 +15,13 @@ const DashboardPage = async () => {
   }
 
   return (
-    <div className="w-full max-w-screen-xl 2xl:max-w-screen-2xl h-screen2 flex gap-6 p-10 mx-auto">
-      <div className="w-2/6 h-full flex flex-col gap-6">
+    <div className="w-full max-w-screen-xl 2xl:max-w-screen-2xl lg:h-screen2 flex flex-col lg:flex-row gap-6 p-4 lg:p-10 mx-auto">
+      <div className="w-full lg:w-2/6 h-full flex flex-col gap-6">
         <TransactionHistory user={user} />
       </div>
 
-      <div className="w-4/6 h-full flex flex-col gap-8">
-        <div className="w-full flex items-center justify-between gap-4">
+      <div className="w-full lg:w-4/6 h-full flex flex-col gap-8">
+        <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4">
           <TotalCompletedGigs user={user} />
           <TotalEarnings user={user} />
           <WalletBalance user={user} />
