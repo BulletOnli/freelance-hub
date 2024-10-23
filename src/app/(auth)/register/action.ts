@@ -2,9 +2,8 @@
 import { createServerAction } from "zsa";
 import z from "zod";
 import { freelancerSchema, studentSignUpSchema } from "@/lib/validation";
-import { generateIdFromEntropySize } from "lucia";
+// import { generateIdFromEntropySize } from "lucia";
 import prisma from "@/lib/prisma";
-import { createSession } from "@/lib/sessions";
 import argon2 from "argon2";
 import {
   createClientUser,
@@ -42,7 +41,7 @@ export const checkUserProfile = createServerAction()
 export const studentSignUpAction = createServerAction()
   .input(studentSignUpSchema)
   .handler(async ({ input }) => {
-    const userId = generateIdFromEntropySize(10);
+    // const userId = generateIdFromEntropySize(10);
 
     try {
       const hashedPassword = await argon2.hash(input.password, {
@@ -57,7 +56,7 @@ export const studentSignUpAction = createServerAction()
         password: hashedPassword,
       });
 
-      await createSession(userId);
+      // await createSession(userId);
     } catch (error) {
       console.log(error);
       throw new Error("Something went wrong");
@@ -67,7 +66,7 @@ export const studentSignUpAction = createServerAction()
 export const freelanacerSignUpAction = createServerAction()
   .input(freelancerSchema)
   .handler(async ({ input }) => {
-    const userId = generateIdFromEntropySize(10);
+    // const userId = generateIdFromEntropySize(10);
 
     try {
       const hashedPassword = await argon2.hash(input.password, {
@@ -82,7 +81,7 @@ export const freelanacerSignUpAction = createServerAction()
         password: hashedPassword,
       });
 
-      await createSession(userId);
+      // await createSession(userId);
     } catch (error) {
       console.log(error);
       throw new Error("Something went wrong");

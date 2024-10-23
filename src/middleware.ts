@@ -14,7 +14,6 @@ export default clerkMiddleware(async (auth, req: NextRequest) => {
 
   // For users visiting /onboarding, don't try to redirect
   if (userId && isOnboardingRoute(req)) {
-    console.log(sessionClaims?.metadata?.onboardingComplete);
     if (sessionClaims?.metadata?.onboardingComplete) {
       const dashboardUrl = new URL("/dashboard", req.url);
       return NextResponse.redirect(dashboardUrl);

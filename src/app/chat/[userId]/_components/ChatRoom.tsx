@@ -36,7 +36,6 @@ const ChatRoom = ({ userId, currentUser }: Props) => {
 
   useEffect(() => {
     if (receiver?.userId !== userId && currentUser?.id) {
-      console.log("hi");
       initializeChat(currentUser?.id, userId);
     }
   }, []);
