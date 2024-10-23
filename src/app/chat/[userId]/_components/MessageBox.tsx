@@ -1,7 +1,7 @@
 "use client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSession } from "@/providers/SessionProvider";
 import { ChatUser } from "@/stores/chatStore";
+import { useUser } from "@clerk/nextjs";
 import { format } from "date-fns";
 
 export type Message = {
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const MessageBox = ({ message, receiver }: Props) => {
-  const { user: currentUser } = useSession();
+  const { user: currentUser } = useUser();
   const isCurrentUser = message.sender?.userId === currentUser?.id;
 
   return (
@@ -39,7 +39,7 @@ const MessageBox = ({ message, receiver }: Props) => {
             />
             <AvatarFallback>
               {isCurrentUser
-                ? currentUser?.firstName[0]
+                ? currentUser?.firstName?.[0]
                 : receiver?.userId?.[0]}
             </AvatarFallback>
           </Avatar>

@@ -12,7 +12,7 @@ type Props = {
 
 const ChatRoomPage = async ({ params }: Props) => {
   const currentUser = await getCurrentUser();
-  if (!currentUser) redirect("/login?redirect=/chat/[userId]");
+  if (!currentUser) redirect("/sign-in");
 
   if (currentUser.id === params.userId) return <NotFound />;
 

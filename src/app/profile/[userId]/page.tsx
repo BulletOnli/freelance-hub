@@ -16,7 +16,7 @@ type Props = {
 
 const UserProfilePage = async ({ params }: Props) => {
   const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/sign-in");
   if (user.role === "CLIENT" && user.id === params.userId)
     redirect("/", RedirectType.replace);
 

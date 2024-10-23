@@ -23,6 +23,7 @@ const CompleteTransaction = ({ gigId }: { gigId: string }) => {
   const handleConfirm = async () => {
     const [data, err] = await execute({ gigId });
     if (err) {
+      console.log(err);
       return toast.error(err?.message || "Something went wrong!");
     }
     toast.success("Transaction completed!");

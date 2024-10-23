@@ -7,7 +7,7 @@ import { getAllGigs } from "@/data-access/gigs";
 
 const GigsPage = async () => {
   const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/sign-in");
 
   const gigs = await getAllGigs("AVAILABLE");
 

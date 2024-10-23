@@ -39,7 +39,7 @@ const statusColor = {
 
 const GigDetailsPage = async ({ params }: Props) => {
   const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  if (!user) redirect("/sign-in");
 
   const gigData = await getGigDetails(params.gigId);
   if (!gigData) return <NotFound />;

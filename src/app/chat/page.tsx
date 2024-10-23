@@ -5,7 +5,7 @@ const ChatPage = async () => {
   const user = await getCurrentUser();
 
   if (!user) {
-    return redirect("/login");
+    return redirect("/sign-in");
   }
 
   redirect(`/chat/${user.id}`);

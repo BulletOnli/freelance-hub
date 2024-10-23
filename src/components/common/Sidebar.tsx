@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { RedirectType, usePathname, useRouter } from "next/navigation";
-import { useSession } from "@/providers/SessionProvider";
 import {
   Tooltip,
   TooltipContent,
@@ -20,6 +19,7 @@ import {
 import { socket } from "@/lib/socket";
 import { toast } from "sonner";
 import { UserRole } from "@prisma/client";
+import { useUser } from "@clerk/nextjs";
 
 const NAV_LINKS = [
   {
@@ -49,10 +49,10 @@ const NAV_LINKS = [
 ];
 
 // Routes that should not display the sidebar
-const INVALID_ROUTES = ["/login", "/register"];
+const INVALID_ROUTES = ["/sign-in", "/sign-up", "/onboarding"];
 
 const Sidebar = () => {
-  const { user } = useSession();
+  const { user } = useUser();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -85,7 +85,7 @@ const Sidebar = () => {
       <div className="flex xl:flex-col items-center gap-4 py-2 xl:py-4 px-4 xl:px-2 bg-white rounded-full shadow">
         {NAV_LINKS.map((link) => {
           // Check if the user role is prohibited from accessing the link
-          if (user && link.prohibitedRoles.includes(user?.role)) return null;
+          // if (user && link.prohibitedRoles.includes(user?.role)) return null;
 
           return (
             <TooltipProvider key={link.label}>

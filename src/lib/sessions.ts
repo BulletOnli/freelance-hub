@@ -4,12 +4,16 @@ import { cookies } from "next/headers";
 import { redirect, RedirectType } from "next/navigation";
 import { cache } from "react";
 import { getLoggedInUser } from "@/data-access/users";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export const getCurrentUser = cache(async () => {
-  const session = await validateRequest();
-  if (!session.user) return null;
+  const { userId } = await auth();
+  if (!userId) return null;
 
-  const user = await getLoggedInUser(session.user.id);
+  // const session = await validateRequest();
+  // if (!session.user) return null;
+
+  const user = await getLoggedInUser(userId);
   return user;
 });
 

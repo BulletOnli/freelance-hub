@@ -3,17 +3,17 @@ import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { CHAT_API_URL } from "@/constants";
-import { useSession } from "@/providers/SessionProvider";
 import MessageBox, { type Message } from "./MessageBox";
 import Loading from "@/app/loading";
 import { ChatUser } from "@/stores/chatStore";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   receiver: ChatUser | null;
 };
 
 const Messages = ({ receiver }: Props) => {
-  const { user: currentUser } = useSession();
+  const { user: currentUser } = useUser();
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
   const messages = useQuery<Message[]>({

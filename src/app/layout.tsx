@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import GlobalProvider from "@/providers";
-import SessionProvider from "@/providers/SessionProvider";
-import { validateRequest } from "@/auth";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "./api/uploadthing/core";
@@ -11,7 +9,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/common/Header";
 import Sidebar from "@/components/common/Sidebar";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import ProfileDropDown from "@/components/ProfileDropDown";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,23 +23,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await validateRequest();
-
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <GlobalProvider>
-          <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
-          <SessionProvider value={session}>
-            <Header children={<ProfileDropDown />} />
+    <ClerkProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <GlobalProvider>
+            <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
+
+            <Header />
             {children}
             <Sidebar />
-          </SessionProvider>
-          <Toaster closeButton />
 
-          <ReactQueryDevtools />
-        </GlobalProvider>
-      </body>
-    </html>
+            <Toaster closeButton />
+
+            <ReactQueryDevtools />
+          </GlobalProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

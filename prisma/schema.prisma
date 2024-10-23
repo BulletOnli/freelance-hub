@@ -17,6 +17,7 @@ enum UserRole {
   ADMIN
   CLIENT
   FREELANCER
+  STRANGER
 }
 
 enum WALLET_TRANSACTION_TYPE {
@@ -58,8 +59,7 @@ model User {
   email               String         @unique
   password            String?
   profilePicture      String? // Upload thing link
-  googleId            String?
-  role                UserRole
+  role                UserRole       @default(STRANGER)
   sessions            Session[]
   profile             UserProfile?
   wallet              Wallet?

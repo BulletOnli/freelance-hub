@@ -4,7 +4,7 @@ import { redirect, RedirectType } from "next/navigation";
 const Profile = async () => {
   const user = await getCurrentUser();
 
-  if (!user) redirect("/login", RedirectType.replace);
+  if (!user) redirect("/sign-in", RedirectType.replace);
 
   redirect(`/profile/${user.id}`, RedirectType.replace);
 };
