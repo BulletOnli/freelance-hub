@@ -1,5 +1,5 @@
 "use client";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import Link from "next/link";
 import { Briefcase } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -8,10 +8,10 @@ import { Button } from "../ui/button";
 
 const AUTH_ROUTES = ["/sign-in", "/sign-up", "/onboarding"];
 
-const Header = ({ children }: PropsWithChildren) => {
+const Header = () => {
   const pathname = usePathname();
 
-  if (AUTH_ROUTES.includes(pathname)) return null;
+  if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) return null;
 
   return (
     <div className="sticky top-0 z-50 w-full py-4 bg-customDark">
@@ -23,7 +23,6 @@ const Header = ({ children }: PropsWithChildren) => {
           </span>
         </Link>
 
-        {/* {children} */}
         <SignedOut>
           <SignInButton>
             <Button size="sm">Sign In</Button>

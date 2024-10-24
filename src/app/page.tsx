@@ -1,8 +1,6 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { getCurrentUser } from "@/lib/sessions";
-import { redirect } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -38,7 +36,7 @@ const featuredFreelancers = [
   },
 ];
 
-const Homepage = async () => {
+const Homepage = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">

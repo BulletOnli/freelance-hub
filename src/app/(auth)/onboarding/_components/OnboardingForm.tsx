@@ -18,7 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { BriefcaseBusiness, User } from "lucide-react";
+import { BriefcaseBusiness, Loader2, User } from "lucide-react";
 import { UserRole } from "@prisma/client";
 import { useServerAction } from "zsa-react";
 import { onboardingAction } from "../../action";
@@ -30,7 +30,7 @@ type Onboarding = z.infer<typeof onboardingSchema>;
 
 const OnboardingForm = () => {
   const router = useRouter();
-  const { execute } = useServerAction(onboardingAction);
+  const { execute, isPending } = useServerAction(onboardingAction);
   const { user } = useUser();
 
   const form = useForm<Onboarding>({
@@ -45,8 +45,9 @@ const OnboardingForm = () => {
 
     if (err) return toast.error(err.message);
 
+    toast.success(data?.message);
     await user?.reload();
-    router.push("/done");
+    router.push("/dashboard");
   };
 
   const role = form.watch("role");
@@ -58,9 +59,7 @@ const OnboardingForm = () => {
         className="w-full flex flex-col items-center gap-6"
       >
         <div className="text-center space-y-2">
-          <p className="text-2xl font-bold text-customDark">
-            Select your Role {role}
-          </p>
+          <p className="text-2xl font-bold text-customDark">Select your Role</p>
           <p className="text-customSemiDark">
             Are you a client looking to hire or a freelancer looking to work?
           </p>
@@ -73,6 +72,7 @@ const OnboardingForm = () => {
           onValueChange={(val: "FREELANCER" | "CLIENT") =>
             form.setValue("role", val)
           }
+          disabled={isPending}
         >
           <div className="flex flex-col items-center gap-2">
             <Label
@@ -149,8 +149,11 @@ const OnboardingForm = () => {
         )}
 
         <div className="w-full flex items-center justify-center gap-2 mx-auto">
-          <Button type="submit" className="w-full">
-            Finish Setup
+          <Button type="submit" className="w-full" disabled={isPending}>
+            {isPending && (
+              <Loader2 className="mr-2 animate-spin size-4" color="white" />
+            )}
+            {isPending ? "Loading..." : "Complete setup"}
           </Button>
         </div>
       </form>
