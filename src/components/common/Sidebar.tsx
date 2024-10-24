@@ -1,25 +1,23 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "../ui/button";
 import {
   BriefcaseBusiness,
-  Home,
   LayoutDashboard,
   MessageCircle,
   UserRound,
 } from "lucide-react";
 import Link from "next/link";
-import { RedirectType, usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { socket } from "@/lib/socket";
-import { toast } from "sonner";
 import { UserRole } from "@prisma/client";
 import { useUser } from "@clerk/nextjs";
+import { useSocketMessages } from "@/hooks/useSocketMessages";
 
 const NAV_LINKS = [
   {
@@ -54,29 +52,9 @@ const INVALID_ROUTES = ["/sign-in", "/sign-up", "/onboarding"];
 const Sidebar = () => {
   const { user } = useUser();
   const pathname = usePathname();
-  const router = useRouter();
 
-  useEffect(() => {
-    if (user?.id) {
-      socket.emit("join", user?.id);
-      console.log("User joined", user?.id);
-    }
-
-    socket.on("message", (message) => {
-      toast.message("💬 [Sender's Name] sent you a message!", {
-        description: "Don't let this message go cold!",
-        action: {
-          label: "View",
-          onClick: () => router.push(`/chat/${message?.sender?.userId}`),
-        },
-        duration: 30_000,
-      });
-    });
-
-    return () => {
-      socket.off("message");
-    };
-  }, [user]);
+  // Listen for new messages
+  useSocketMessages();
 
   if (!user || INVALID_ROUTES.includes(pathname)) return null;
 

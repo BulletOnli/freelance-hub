@@ -1,29 +1,29 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
-import { socket } from "@/lib/socket";
 import Messages from "./Messages";
 import { useQueryClient } from "@tanstack/react-query";
-import { User } from "@/types";
 import { useChatStore } from "@/stores/chatStore";
+import { useUser } from "@clerk/nextjs";
 
 type Props = {
   userId: string;
-  currentUser: User;
 };
 
-const ChatRoom = ({ userId, currentUser }: Props) => {
+const ChatRoom = ({ userId }: Props) => {
   const queryClient = useQueryClient();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { receiver, initializeChat, sendMessage } = useChatStore();
+  const { user: currentUser } = useUser();
 
   const handleSendMessage = async () => {
     if (!inputRef.current) return;
     const newMessage = inputRef.current?.value;
 
     await sendMessage({
+      // @ts-ignore
       senderId: currentUser?.id,
       message: newMessage,
     });
@@ -38,19 +38,7 @@ const ChatRoom = ({ userId, currentUser }: Props) => {
     if (receiver?.userId !== userId && currentUser?.id) {
       initializeChat(currentUser?.id, userId);
     }
-  }, []);
-
-  useEffect(() => {
-    socket.on("message", (message) => {
-      queryClient.invalidateQueries({
-        queryKey: ["messages", userId],
-      });
-    });
-
-    return () => {
-      socket.off("message");
-    };
-  }, [userId, queryClient]);
+  }, [currentUser?.id]);
 
   return (
     <div className="w-2/3 space-y-2 mx-auto p-4">

@@ -12,8 +12,12 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
   if (!contract) return null;
 
   const user = await getCurrentUser();
-  // If the user is not the client or freelancer, return null
-  if (contract.client.id !== user?.id && contract.freelancer.id !== user?.id) {
+  // If the current user is not the client, freelancer, or admin, return null
+  if (
+    contract.client.id !== user?.id &&
+    contract.freelancer.id !== user?.id &&
+    user?.role !== "ADMIN"
+  ) {
     return null;
   }
 

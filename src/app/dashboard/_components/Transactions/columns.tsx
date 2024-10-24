@@ -23,11 +23,13 @@ export const columns: ColumnDef<Transaction>[] = [
           onClick={() => column.toggleSorting(isAsc)}
         >
           Date
-          {isAsc ? (
-            <ArrowUp className="size-4" />
-          ) : (
-            <ArrowDown className="size-4" />
-          )}
+          {column.getIsSorted() ? (
+            isAsc ? (
+              <ArrowUp className="size-4" />
+            ) : (
+              <ArrowDown className="size-4" />
+            )
+          ) : null}
         </div>
       );
     },
@@ -44,8 +46,24 @@ export const columns: ColumnDef<Transaction>[] = [
   },
   {
     accessorKey: "amount",
-    header: () => {
-      return <p className="text-right text-customGray">Amount</p>;
+    header: ({ column }) => {
+      const isAsc = column.getIsSorted() === "asc";
+
+      return (
+        <div
+          className="flex items-center justify-end gap-1 cursor-pointer"
+          onClick={() => column.toggleSorting(isAsc)}
+        >
+          <p className="text-right text-customGray">Amount</p>
+          {column.getIsSorted() ? (
+            isAsc ? (
+              <ArrowUp className="size-4" />
+            ) : (
+              <ArrowDown className="size-4" />
+            )
+          ) : null}
+        </div>
+      );
     },
     cell: ({ row }) => {
       const amount: number = row.getValue("amount");

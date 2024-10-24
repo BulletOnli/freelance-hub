@@ -1,8 +1,8 @@
 import React from "react";
 import ChatRoom from "./_components/ChatRoom";
-import { getCurrentUser } from "@/lib/sessions";
 import { redirect } from "next/navigation";
 import NotFound from "@/app/not-found";
+import { auth } from "@clerk/nextjs/server";
 
 type Props = {
   params: {
@@ -11,14 +11,15 @@ type Props = {
 };
 
 const ChatRoomPage = async ({ params }: Props) => {
-  const currentUser = await getCurrentUser();
-  if (!currentUser) redirect("/sign-in");
+  const { userId: currentUserId } = await auth();
 
-  if (currentUser.id === params.userId) return <NotFound />;
+  if (!currentUserId) redirect("/sign-in");
+
+  if (currentUserId === params.userId) return <NotFound />;
 
   return (
     <div>
-      <ChatRoom userId={params.userId} currentUser={currentUser} />
+      <ChatRoom userId={params.userId} />
     </div>
   );
 };

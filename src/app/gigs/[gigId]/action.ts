@@ -1,9 +1,8 @@
 "use server";
-import { getGigStatus, updateGigStatus } from "@/data-access/gigs";
+import { updateGigStatus } from "@/data-access/gigs";
 import {
   applyToGig,
   getApplicanttionStatus,
-  getApplicationDetail,
   removeApplication,
   updateApplicationStatus,
 } from "@/data-access/gig-applicants";
@@ -13,11 +12,7 @@ import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createServerAction } from "zsa";
-import {
-  createGigContract,
-  getContractDetails,
-  updateContractStatus,
-} from "@/data-access/gig-contract";
+import { createGigContract } from "@/data-access/gig-contract";
 import {
   ADMIN_USER_ID,
   ADMIN_WALLET_ID,
@@ -26,10 +21,6 @@ import {
 } from "@/constants";
 import prisma from "@/lib/prisma";
 import { isAfter } from "date-fns";
-import {
-  decrementWalletBalance,
-  incrementWalletBalance,
-} from "@/data-access/wallets";
 import { createTransaction } from "@/data-access/transactions";
 
 export const applyToGigAction = createServerAction()

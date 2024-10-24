@@ -1,18 +1,9 @@
 "use server";
-import { createGig, getGigDetails, updateGigStatus } from "@/data-access/gigs";
-import {
-  applyToGig,
-  updateApplicationStatus,
-} from "@/data-access/gig-applicants";
+import { createGig } from "@/data-access/gigs";
 import { getCurrentUser } from "@/lib/sessions";
-import { createGigApplicationSchema, createGigSchema } from "@/lib/validation";
-import { Prisma } from "@prisma/client";
+import { createGigSchema } from "@/lib/validation";
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { createServerAction } from "zsa";
-import { createGigContract } from "@/data-access/gig-contract";
-import { MINIMUM_GIG_PRICE } from "@/constants";
-import prisma from "@/lib/prisma";
 import { isAfter } from "date-fns";
 
 export const createGigAction = createServerAction()
