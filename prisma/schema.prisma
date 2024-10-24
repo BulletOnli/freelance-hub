@@ -97,16 +97,18 @@ model Wallet {
 }
 
 model WalletTransaction {
-  id          String                    @id @default(uuid())
-  walletId    String
-  type        WALLET_TRANSACTION_TYPE
-  amount      Float
-  description String
-  status      WALLET_TRANSACTION_STATUS @default(PENDING)
-  createdAt   DateTime                  @default(now())
-  updatedAt   DateTime                  @updatedAt
+  id            String                    @id @default(uuid())
+  walletId      String
+  gigContractId String?
+  type          WALLET_TRANSACTION_TYPE
+  amount        Float
+  description   String
+  status        WALLET_TRANSACTION_STATUS @default(PENDING)
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
 
-  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  wallet      Wallet       @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  gigContract GigContract? @relation(fields: [gigContractId], references: [id])
 
   @@map("wallet-transactions")
 }
@@ -142,9 +144,10 @@ model GigContract {
   createdAt    DateTime            @default(now())
   updatedAt    DateTime            @updatedAt
 
-  gig        Gig  @relation(fields: [gigId], references: [id], onDelete: Cascade)
-  freelancer User @relation(name: "FreelancerContracts", fields: [freelancerId], references: [id])
-  client     User @relation(name: "ClientContracts", fields: [clientId], references: [id])
+  gig                Gig                 @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  freelancer         User                @relation(name: "FreelancerContracts", fields: [freelancerId], references: [id])
+  client             User                @relation(name: "ClientContracts", fields: [clientId], references: [id])
+  walletTransactions WalletTransaction[]
 
   @@map("gig-contracts")
 }

@@ -5,7 +5,7 @@ import TotalEarnings from "./_components/TotalEarnings";
 import TotalCompletedGigs from "./_components/TotalCompletedGigs";
 import { getCurrentUser } from "@/lib/sessions";
 import { redirect } from "next/navigation";
-import TransactionHistory from "./_components/TransactionHistory";
+import TransactionHistory from "./_components/Transactions/TransactionHistory";
 
 const DashboardPage = async () => {
   const user = await getCurrentUser();
@@ -17,7 +17,7 @@ const DashboardPage = async () => {
   return (
     <div className="w-full max-w-screen-xl 2xl:max-w-screen-2xl lg:h-screen2 flex flex-col lg:flex-row gap-6 p-4 lg:p-10 mx-auto">
       <div className="w-full lg:w-2/6 h-full flex flex-col gap-6">
-        <TransactionHistory user={user} />
+        <OngoingGigs user={user} />
       </div>
 
       <div className="w-full lg:w-4/6 h-full flex flex-col gap-8">
@@ -27,7 +27,7 @@ const DashboardPage = async () => {
           <WalletBalance user={user} />
         </div>
 
-        <OngoingGigs user={user} />
+        <TransactionHistory user={user} />
       </div>
     </div>
   );

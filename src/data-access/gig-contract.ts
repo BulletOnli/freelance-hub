@@ -86,6 +86,7 @@ export const createGigContract = async (input: CreateGigContract) => {
   await decrementWalletBalance({ userId: input.clientId, amount: input.price });
   // Create a transaction receipt for the client
   await createTransaction({
+    gigContractId: contract.id,
     description: "Payment for gig",
     amount: input.price,
     type: "CREDIT",

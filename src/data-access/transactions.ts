@@ -8,6 +8,13 @@ export const getAllTransactions = async (walletId: string) => {
   return await prisma.walletTransaction.findMany({
     orderBy: { createdAt: "desc" },
     where: { walletId },
+    include: {
+      gigContract: {
+        select: {
+          gigId: true,
+        },
+      },
+    },
   });
 };
 
@@ -50,6 +57,7 @@ type CreateTransaction = {
   status: WALLET_TRANSACTION_STATUS;
   walletId: string;
   description: string;
+  gigContractId?: string;
 };
 
 export const createTransaction = async ({
@@ -58,6 +66,7 @@ export const createTransaction = async ({
   type,
   walletId,
   description,
+  gigContractId,
 }: CreateTransaction) => {
   return await prisma.walletTransaction.create({
     data: {
@@ -66,6 +75,7 @@ export const createTransaction = async ({
       type,
       status,
       walletId,
+      gigContractId,
     },
   });
 };

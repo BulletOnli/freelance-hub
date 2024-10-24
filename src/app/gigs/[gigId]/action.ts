@@ -220,6 +220,7 @@ export const confirmTransactionAction = createServerAction()
 
     // Create a transaction receipt for the freelancer
     await createTransaction({
+      gigContractId: gig.contract.id,
       description: "Received payment for gig",
       amount: gig.contract.price - tax,
       type: "DEBIT",
@@ -229,6 +230,7 @@ export const confirmTransactionAction = createServerAction()
 
     // Create a transaction receipt for the admin
     await createTransaction({
+      gigContractId: gig.contract.id,
       description: "Transaction fee",
       amount: tax,
       type: "DEBIT",
