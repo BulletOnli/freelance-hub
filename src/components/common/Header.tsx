@@ -19,7 +19,7 @@ const Header = () => {
         <Link className="flex items-center justify-center" href="/">
           <Briefcase className="h-6 w-6" color="white" />
           <span className="ml-2 text-white text-lg font-semibold">
-            FreelanceHub
+            Freelance Hub
           </span>
         </Link>
 

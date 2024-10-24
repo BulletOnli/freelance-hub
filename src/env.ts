@@ -7,6 +7,7 @@ export const env = createEnv({
     DATABASE_URL: z.string().min(1),
     UPLOADTHING_SECRET: z.string(),
     UPLOADTHING_APP_ID: z.string(),
+    WEBHOOK_SECRET: z.string().min(1),
   },
   client: {
     NEXT_PUBLIC_BASE_URL: z.string().min(1),
@@ -23,5 +24,6 @@ export const env = createEnv({
     UPLOADTHING_APP_ID: process.env.UPLOADTHING_APP_ID,
     NEXT_PUBLIC_ADMIN_USER_ID: process.env.NEXT_PUBLIC_ADMIN_USER_ID,
     NEXT_PUBLIC_ADMIN_WALLET_ID: process.env.NEXT_PUBLIC_ADMIN_WALLET_ID,
+    WEBHOOK_SECRET: process.env.WEBHOOK_SECRET,
   },
 });

@@ -6,9 +6,6 @@ export const getLoggedInUser = async (userId: string) => {
     where: {
       id: userId,
     },
-    omit: {
-      password: true,
-    },
     include: {
       wallet: true,
     },
@@ -20,7 +17,6 @@ export const createUser = async (input: {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   profilePicture: string;
 }) => {
   const user = await prisma.user.create({
@@ -29,7 +25,6 @@ export const createUser = async (input: {
       firstName: input.firstName,
       lastName: input.lastName,
       email: input.email,
-      password: input.password,
       profilePicture: input.profilePicture,
     },
   });
@@ -40,9 +35,6 @@ export const createUser = async (input: {
 export const getUserProfile = async (id: string) => {
   return await prisma.user.findUnique({
     where: { id },
-    omit: {
-      password: true,
-    },
     include: {
       profile: true,
     },

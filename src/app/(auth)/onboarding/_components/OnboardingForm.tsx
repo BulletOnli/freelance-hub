@@ -56,7 +56,7 @@ const OnboardingForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="w-full flex flex-col items-center gap-6"
+        className="w-full flex flex-col items-center gap-4"
       >
         <div className="text-center space-y-2">
           <p className="text-2xl font-bold text-customDark">Select your Role</p>

@@ -12,7 +12,6 @@ export type User = {
   lastName: string;
   email: string | null;
   profilePicture: string | null;
-  googleId: string | null;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;

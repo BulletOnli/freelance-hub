@@ -1,11 +1,12 @@
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
-import { createClientUser, createUser } from "@/data-access/users";
+import { createUser } from "@/data-access/users";
+import { env } from "@/env";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
-  const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+  const WEBHOOK_SECRET = env.WEBHOOK_SECRET;
 
   if (!WEBHOOK_SECRET) {
     throw new Error(
@@ -60,7 +61,6 @@ export async function POST(req: Request) {
         id: evt.data.id,
         firstName: evt.data.first_name || "N/A",
         lastName: evt.data.last_name || "N/A",
-        password: "password",
         profilePicture: evt.data.image_url,
       });
 

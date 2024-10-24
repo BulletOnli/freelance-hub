@@ -57,10 +57,8 @@ model User {
   firstName           String
   lastName            String
   email               String         @unique
-  password            String?
   profilePicture      String? // Upload thing link
   role                UserRole       @default(STRANGER)
-  sessions            Session[]
   profile             UserProfile?
   wallet              Wallet?
   gigs                Gig[]
@@ -85,16 +83,6 @@ model UserProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user-profile")
-}
-
-model Session {
-  id        String   @id
-  userId    String
-  expiresAt DateTime
-
-  user User @relation(references: [id], fields: [userId], onDelete: Cascade)
-
-  @@map("sessions")
 }
 
 model Wallet {
