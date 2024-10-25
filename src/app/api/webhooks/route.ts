@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/data-access/users";
 import { env } from "@/env";
+import axios from "axios";
+import { CHAT_API_URL } from "@/constants";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -62,6 +64,11 @@ export async function POST(req: Request) {
         firstName: evt.data.first_name || "N/A",
         lastName: evt.data.last_name || "N/A",
         profilePicture: evt.data.image_url,
+      });
+
+      // Save user to chat db
+      await axios.post(`${CHAT_API_URL}/user/create`, {
+        userId: evt.data.id,
       });
 
       console.log("User creatd saved to db");

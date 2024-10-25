@@ -31,6 +31,9 @@ const ChatRoom = ({ userId }: Props) => {
     queryClient.invalidateQueries({
       queryKey: ["messages", receiver?.userId],
     });
+    queryClient.invalidateQueries({
+      queryKey: ["conversations"],
+    });
     inputRef.current.value = "";
   };
 
@@ -41,7 +44,7 @@ const ChatRoom = ({ userId }: Props) => {
   }, [currentUser?.id]);
 
   return (
-    <div className="w-2/3 space-y-2 mx-auto p-4">
+    <div className="w-full max-w-7xl space-y-2 mx-auto p-4">
       <Messages receiver={receiver} />
       <div className="flex-1 overflow-hidden"></div>
 

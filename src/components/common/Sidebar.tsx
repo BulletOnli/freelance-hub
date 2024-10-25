@@ -47,7 +47,7 @@ const NAV_LINKS = [
 ];
 
 // Routes that should not display the sidebar
-const INVALID_ROUTES = ["/sign-in", "/sign-up", "/onboarding"];
+const INVALID_ROUTES = ["/sign-in", "/sign-up", "/onboarding", "/chat"];
 
 const Sidebar = () => {
   const { user } = useUser();
@@ -56,7 +56,9 @@ const Sidebar = () => {
   // Listen for new messages
   useSocketMessages();
 
-  if (!user || INVALID_ROUTES.includes(pathname)) return null;
+  if (!user || INVALID_ROUTES.some((route) => pathname.startsWith(route))) {
+    return null;
+  }
 
   return (
     <div className="fixed xl:left-0 bottom-0 w-full xl:w-auto xl:h-full py-6 xl:py-0 xl:px-6 flex justify-center items-center bg-gradient-to-t xl:bg-gradient-to-r from-customDark/5 to-black/0">
