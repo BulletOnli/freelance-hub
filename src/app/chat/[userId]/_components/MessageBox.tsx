@@ -2,6 +2,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ChatUser } from "@/stores/chatStore";
 import { useUser } from "@clerk/nextjs";
+import { User } from "@clerk/nextjs/server";
+import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 
 export type Message = {
@@ -21,11 +23,14 @@ type Props = {
 const MessageBox = ({ message, receiver }: Props) => {
   const { user: currentUser } = useUser();
   const isCurrentUser = message.sender?.userId === currentUser?.id;
+  const queryClient = useQueryClient();
+  const receiverDetails: User | undefined = queryClient.getQueryData([
+    "user",
+    receiver?.userId,
+  ]);
 
   return (
-    <div
-      className={`flex mb-4 ${isCurrentUser ? "justify-end" : "justify-start"}`}
-    >
+    <div className={`flex ${isCurrentUser ? "justify-end" : "justify-start"}`}>
       <div
         className={`flex items-start space-x-2 max-w-[70%] ${
           isCurrentUser && "flex-row-reverse space-x-reverse"
@@ -33,14 +38,11 @@ const MessageBox = ({ message, receiver }: Props) => {
       >
         {!isCurrentUser && (
           <Avatar className="h-8 w-8">
-            <AvatarImage
-              src="https://github.com/shadcn.png"
-              alt="User avatar"
-            />
+            <AvatarImage src={receiverDetails?.imageUrl} alt="User avatar" />
             <AvatarFallback>
               {isCurrentUser
                 ? currentUser?.firstName?.[0]
-                : receiver?.userId?.[0]}
+                : receiverDetails?.firstName?.[0]}
             </AvatarFallback>
           </Avatar>
         )}

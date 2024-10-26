@@ -1,7 +1,10 @@
 import React from "react";
 import ChatRoom from "./_components/ChatRoom";
 import NotFound from "@/app/not-found";
-import { auth, clerkClient } from "@clerk/nextjs/server";
+import { auth, clerkClient, User } from "@clerk/nextjs/server";
+import { useQueryClient } from "@tanstack/react-query";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import ChatRoomHeader from "./_components/ChatRoomHeader";
 
 type Props = {
   params: {
@@ -23,7 +26,13 @@ const ChatRoomPage = async ({ params }: Props) => {
     );
   }
 
-  return <ChatRoom userId={params.userId} />;
+  return (
+    <div className="w-full h-full max-w-7xl mx-auto space-y-4">
+      <ChatRoomHeader receiverId={params.userId} />
+
+      <ChatRoom userId={params.userId} />
+    </div>
+  );
 };
 
 export default ChatRoomPage;

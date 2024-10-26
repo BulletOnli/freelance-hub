@@ -44,9 +44,8 @@ const ChatRoom = ({ userId }: Props) => {
   }, [currentUser?.id]);
 
   return (
-    <div className="w-full max-w-7xl space-y-2 mx-auto p-4">
+    <>
       <Messages receiver={receiver} />
-      <div className="flex-1 overflow-hidden"></div>
 
       <div className="flex w-full items-center space-x-2">
         <Input
@@ -61,7 +60,7 @@ const ChatRoom = ({ userId }: Props) => {
           <span className="sr-only">Send message</span>
         </Button>
       </div>
-    </div>
+    </>
   );
 };
 

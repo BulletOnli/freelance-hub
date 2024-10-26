@@ -6,10 +6,10 @@ export default async function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen2">
+    <div className="flex h-screen2 overflow-hidden">
       <ChatSidebar />
 
-      <div className="w-full p-4">{children}</div>
+      <div className="w-full h-full px-4 py-2">{children}</div>
     </div>
   );
 }

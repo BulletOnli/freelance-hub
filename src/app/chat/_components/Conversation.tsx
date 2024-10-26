@@ -1,10 +1,12 @@
 "use client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SidebarMenuItem } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChatUser } from "@/stores/chatStore";
 import { User } from "@clerk/nextjs/server";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export type TConversation = {
   _id: string;
@@ -14,6 +16,9 @@ export type TConversation = {
 
 const Conversation = ({ conversation }: { conversation: TConversation }) => {
   const { receiver } = conversation;
+  const pathname = usePathname();
+  const userIdParams = pathname.split("/")[2];
+  const isCurrentChat = receiver?.userId === userIdParams;
 
   const userQuery = useQuery<User>({
     queryKey: ["user", receiver?.userId],
@@ -21,13 +26,14 @@ const Conversation = ({ conversation }: { conversation: TConversation }) => {
       const user = await fetch(`/api/clerk/getUser/${receiver?.userId}`);
       return user.json();
     },
+    enabled: !!receiver?.userId,
   });
 
   if (userQuery.isLoading)
     return (
-      <div className="flex items-center space-x-2">
-        <Skeleton className="h-12 w-12 rounded-full" />
-        <div className="space-y-2">
+      <div className="flex items-center space-x-2 px-2">
+        <Skeleton className="h-10 w-10 rounded-full" />
+        <div className="space-y-1">
           <Skeleton className="h-4 w-[150px]" />
           <Skeleton className="h-4 w-[100px]" />
         </div>
@@ -37,7 +43,19 @@ const Conversation = ({ conversation }: { conversation: TConversation }) => {
   return (
     <Link href={`/chat/${receiver?.userId}`} className="w-full">
       <SidebarMenuItem>
-        <div className="flex w-full items-center gap-3 text-wrap">
+        <div
+          className={`relative text-black border-l-4 p-2 flex w-full items-center gap-3 text-wrap rounded ${
+            isCurrentChat
+              ? "bg-customDark/5 border-customDark"
+              : "border-transparent hover:border-customDark hover:bg-customDark/5"
+          } `}
+        >
+          <Avatar>
+            <AvatarImage src={userQuery.data?.imageUrl} />
+            <AvatarFallback>
+              {userQuery.data?.firstName?.slice(0, 1)}
+            </AvatarFallback>
+          </Avatar>
           {userQuery.data?.firstName} {userQuery.data?.lastName}
         </div>
       </SidebarMenuItem>
