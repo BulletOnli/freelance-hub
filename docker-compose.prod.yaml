@@ -1,0 +1,8 @@
+services:
+  web:
+    image: bulletonli/freelance-hub-web:latest
+    container_name: freelance-hub-web
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.prod
