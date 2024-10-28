@@ -2,9 +2,9 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/data-access/users";
-import { env } from "@/env";
 import axios from "axios";
 import { CHAT_API_URL } from "@/constants";
+import { env } from "@/env/server";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint

@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "docker:run": "docker compose --env-file .env.production up --build"
+    "docker:run": "docker compose --env-file .env.prod up --build"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.7.5",

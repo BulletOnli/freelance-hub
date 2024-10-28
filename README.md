@@ -1,36 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Freelance Platform with Microservices Architecture
 
-## Getting Started.
+A modular freelance platform designed with a microservices architecture. This MVP connects freelancers and clients with essential services for user management, real-time chat, and secure payment processing. Each service is independently managed, ensuring scalability, maintainability, and flexibility.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **User Management**: Registration, authentication, and profile management powered by Clerk for streamlined user handling.
+- **Real-time Chat**: Instant messaging with Socket.IO, allowing seamless communication between users.
+- **Payment Service**: Secure, reliable payment processing with ??? and ???.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Main App**: Next.js 14, Typescript, PostgreSQL, React Query, Zustand, Socket.IO, Clerk
+- **Chat Service**: Express.js, Typescript, MongoDB, Socket.IO
+- **Payment Service**: ???, ???
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Architecture Overview
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+This project leverages a microservices architecture, separating core functionalities into distinct services that communicate with each other to with each other through APIs.
