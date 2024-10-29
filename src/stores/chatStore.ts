@@ -10,6 +10,9 @@ export type ChatUser = {
 };
 
 interface ChatState {
+  onlineUsers: Record<string, boolean>;
+  setOnlineUsers: (users: Record<string, boolean>) => void;
+  isUserOnline: (userId: string) => boolean;
   initializeChat: (senderId: string, receiverId: string) => Promise<void>;
   receiver: ChatUser | null;
   setReceiver: (receiver: ChatUser) => void;
@@ -17,7 +20,15 @@ interface ChatState {
 }
 
 export const useChatStore = create<ChatState>()((set, get) => ({
+  onlineUsers: {},
   receiver: null,
+
+  setOnlineUsers: (users) => set({ onlineUsers: users }),
+
+  isUserOnline: (userId: string) => {
+    return get().onlineUsers?.[userId] || false;
+  },
+
   setReceiver: (receiver: ChatUser) => set({ receiver }),
 
   initializeChat: async (senderId: string, receiverId: string) => {

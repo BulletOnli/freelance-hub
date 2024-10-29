@@ -1,24 +1,42 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useQueryClient } from "@tanstack/react-query";
 import { socket } from "@/lib/socket";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { useChatStore } from "@/stores/chatStore";
+
+type Message = {
+  sender?: {
+    userId: string;
+  };
+};
+
+type OnlineStatusPayload = {
+  isConnected: boolean;
+  userId: string;
+  users: Record<string, boolean>;
+};
 
 export function useSocketMessages() {
   const queryClient = useQueryClient();
   const { user } = useUser();
   const pathname = usePathname();
   const router = useRouter();
+  const { setOnlineUsers } = useChatStore();
 
-  useEffect(() => {
-    if (!user?.id) return;
+  const handleOnlineStatus = useCallback(
+    ({ isConnected, userId, users }: OnlineStatusPayload) => {
+      setOnlineUsers(users);
+      if (userId === user?.id) return;
+      toast.info(`${userId} is now ${isConnected ? "online" : "offline"}`);
+    },
+    [user?.id, setOnlineUsers]
+  );
 
-    socket?.emit("join", user.id);
-    console.log("User joined", user.id);
-
-    socket?.on("message", (message) => {
+  const handleMessage = useCallback(
+    (message: Message) => {
       queryClient.invalidateQueries({
         queryKey: ["messages", message?.sender?.userId],
       });
@@ -31,12 +49,48 @@ export function useSocketMessages() {
           label: "View",
           onClick: () => router.push(`/chat/${message?.sender?.userId}`),
         },
-        duration: 30_000,
+        duration: 10_000,
       });
-    });
+    },
+    [pathname, queryClient, router]
+  );
+
+  useEffect(() => {
+    if (!user?.id || !socket?.connected) {
+      socket.emit("logout");
+      return;
+    }
+
+    const handleConnect = () => {
+      socket.emit("join", user.id);
+    };
+
+    const handleError = (error: Error) => {
+      console.error("Socket error:", error);
+      toast.error("Connection error. Trying to reconnect...");
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("error", handleError);
+    socket.on("onlineStatus", handleOnlineStatus);
+    socket.on("message", handleMessage);
+
+    socket.emit("join", user.id);
 
     return () => {
-      socket?.off("message");
+      socket.off("connect", handleConnect);
+      socket.off("error", handleError);
+      socket.off("onlineStatus", handleOnlineStatus);
+      socket.off("message", handleMessage);
     };
-  }, [user?.id, pathname]);
+  }, [user?.id, handleOnlineStatus, handleMessage]);
+
+  const reconnect = useCallback(() => {
+    if (socket && user?.id) {
+      socket.connect();
+      socket.emit("join", user.id);
+    }
+  }, [user?.id]);
+
+  return { reconnect };
 }

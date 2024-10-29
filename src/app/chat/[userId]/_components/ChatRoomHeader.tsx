@@ -6,12 +6,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import SettingsMenu from "./SettingsMenu";
+import { useChatStore } from "@/stores/chatStore";
 
 type Props = {
   receiverId: string;
 };
 
 const ChatRoomHeader = ({ receiverId }: Props) => {
+  const isOnline = useChatStore((state) => state.isUserOnline(receiverId));
+
   const userQuery = useQuery<User>({
     queryKey: ["user", receiverId],
     queryFn: async () => {
@@ -45,8 +48,12 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
 
       <div className="flex items-center gap-2">
         <Badge variant="outline">
-          <div className="size-2 bg-green-500 mr-2 rounded-full"></div>
-          Active now
+          <div
+            className={`${
+              isOnline ? "bg-green-500" : "bg-gray-400"
+            } size-2 mr-2 rounded-full`}
+          ></div>
+          {isOnline ? "Active now" : "Offline"}
         </Badge>
 
         <SettingsMenu />
