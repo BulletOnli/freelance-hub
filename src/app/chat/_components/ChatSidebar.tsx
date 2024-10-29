@@ -36,8 +36,8 @@ const ChatSidebar = () => {
 
   return (
     <SidebarProvider className="min-h-[calc(100vh - 280px)] w-fit">
-      <Sidebar variant="floating" className="top-[72px]">
-        <SidebarHeader className=" flex justify-center items-center border-b py-4 px-4">
+      <Sidebar variant="floating" className="top-[72px] ">
+        <SidebarHeader className="bg-primary-custom flex justify-center items-center border-b py-4 px-4">
           <Link href="/chat">
             <div className="font-semibold flex items-center gap-2">
               <MessageCircle className="size-5" />
@@ -46,7 +46,7 @@ const ChatSidebar = () => {
           </Link>
         </SidebarHeader>
 
-        <SidebarContent>
+        <SidebarContent className="bg-primary-custom">
           <div className="p-4">
             <div className="relative">
               <Search className="absolute left-4 top-3 size-4 text-muted-foreground" />

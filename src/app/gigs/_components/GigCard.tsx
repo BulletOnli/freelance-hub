@@ -31,7 +31,7 @@ const GigCard = async ({ gig }: Props) => {
   );
 
   return (
-    <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-lg hover:bg-customLightGray/5">
+    <div className="w-full max-w-[700px] p-4 flex flex-col gap-4 rounded-xl hover:shadow-sm bg-primary-custom border border-customBorder">
       <div className="flex items-center gap-2">
         <Avatar>
           <AvatarImage src={gig?.user?.profilePicture || undefined} />

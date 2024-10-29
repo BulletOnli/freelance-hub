@@ -34,7 +34,7 @@ import { Switch } from "@/components/ui/switch";
 const SettingsMenu = () => {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="p-2 rounded-full hover:bg-customDark/5">
+      <DropdownMenuTrigger className="p-2 rounded-full hover:bg-secondary-custom">
         <EllipsisVertical className="size-5" />
         <span className="sr-only">Open menu</span>
       </DropdownMenuTrigger>

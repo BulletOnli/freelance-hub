@@ -14,7 +14,7 @@ type Props = {
 const GigApplicants = ({ gigData }: Props) => {
   return (
     <div className="w-full lg:max-w-xs flex flex-col gap-4">
-      <Card className="p-4 space-y-4">
+      <Card className="p-4 space-y-4 shadow-none border">
         <CardHeader className="p-0">
           <CardTitle>Applicants</CardTitle>
         </CardHeader>

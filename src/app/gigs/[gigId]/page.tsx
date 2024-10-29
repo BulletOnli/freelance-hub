@@ -53,13 +53,13 @@ const GigDetailsPage = async ({ params }: Props) => {
     <div
       className={cn(
         user?.role === "CLIENT" ? "max-w-6xl" : "max-w-5xl",
-        "container  mx-auto flex flex-col gap-8 px-4 py-8"
+        "container mx-auto flex flex-col gap-4 px-4 py-8"
       )}
     >
       <ContractDetails gigId={params.gigId} />
 
       <div className="flex flex-col lg:flex-row justify-center gap-4">
-        <Card className="w-full h-fit overflow-hidden">
+        <Card className="w-full h-fit overflow-hidden shadow-none">
           <CardHeader>
             <CardTitle className="text-2xl md:text-3xl font-bold">
               {title}

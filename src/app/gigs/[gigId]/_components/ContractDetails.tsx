@@ -46,8 +46,8 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <Card className=" w-full mx-auto">
+    <div className="flex flex-col gap-2 ">
+      <Card className=" w-full mx-auto shadow-none">
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">

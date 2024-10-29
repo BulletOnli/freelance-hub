@@ -19,7 +19,7 @@ const TotalEarnings = async ({ user }: { user: User }) => {
   );
 
   return (
-    <div className="w-full lg:w-auto flex flex-1 flex-col gap-2 text-sm p-6 rounded-lg shadow">
+    <div className="bg-white w-full lg:w-auto flex flex-1 flex-col gap-2 text-sm p-6 rounded-lg border border-slate-200">
       <p className="font-medium">Earnings this Month</p>
       <p className="text-2xl font-bold">
         {formatCurrency(data?.earningsThisMonth!)}

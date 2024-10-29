@@ -12,7 +12,7 @@ const TransactionHistory = async ({ user }: Props) => {
   const transactions = await getAllTransactions(user.wallet!.id);
 
   return (
-    <div className="space-y-4 p-4 h-full shadow rounded-lg">
+    <div className="bg-white border border-slate-200 space-y-4 p-4 h-full rounded-lg">
       <p className="font-medium">Transaction History</p>
 
       <TransactionTable columns={columns} data={transactions} />

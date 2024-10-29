@@ -17,7 +17,7 @@ const GigsPage = async () => {
         <Fragment key={gig.id}>
           <GigCard gig={gig} />
           {index < gigs.length - 1 && (
-            <div className="w-full h-px bg-customLightGray/50"></div>
+            <div className="w-full h-px bg-customBorder"></div>
           )}
         </Fragment>
       ))}

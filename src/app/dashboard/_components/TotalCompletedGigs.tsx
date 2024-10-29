@@ -12,7 +12,7 @@ const TotalCompletedGigs = async ({ user }: { user: User }) => {
   }
 
   return (
-    <div className="w-full lg:w-auto flex-1 flex flex-col gap-2 text-sm p-6 rounded-lg shadow">
+    <div className="w-full bg-white lg:w-auto flex-1 flex flex-col gap-2 text-sm p-6 rounded-lg border border-slate-200">
       <p className="font-medium">Total Completed Gigs</p>
       <p className="text-2xl font-bold">{contracts?.length}</p>
       <Link href={"#"} className="flex items-center gap-1 group">

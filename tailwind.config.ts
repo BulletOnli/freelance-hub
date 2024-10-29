@@ -44,8 +44,9 @@ const config = {
       colors: {
         customDark: "#020617",
         customSemiDark: "#24292F",
-        customLightGray: "#989898",
+        customLightGray: "#EDF6F9",
         customGray: "#5D5D5D",
+        customBorder: "#E2E8F0",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -59,10 +60,12 @@ const config = {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          custom: "#ffffff",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          custom: "#f8f9fa",
         },
         muted: {
           DEFAULT: "hsl(var(--muted))",

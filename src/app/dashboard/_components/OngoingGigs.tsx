@@ -9,7 +9,7 @@ const OngoingGigs = async ({ user }: { user: User }) => {
   const contracts = await getAllContracts("ONGOING", user?.id);
 
   return (
-    <div className="space-y-4 h-full p-4 shadow rounded-lg">
+    <div className="space-y-4 h-full p-4 rounded-lg bg-white border border-slate-200">
       <p className="font-medium">Ongoing Gigs</p>
 
       <div className="space-y-4">

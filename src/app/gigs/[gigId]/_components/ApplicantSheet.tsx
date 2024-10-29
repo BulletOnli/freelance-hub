@@ -24,14 +24,14 @@ type Props = {
 
 const ApplicantSheet = ({ applicants, gigData }: Props) => {
   return (
-    <Sheet>
+    <Sheet defaultOpen={applicants?.length !== 0}>
       <SheetTrigger>
         <div className="flex justify-center items-center gap-1 mt-2">
           <p className="text-sm">Load more</p>
           <ChevronRightIcon className="size-5" />
         </div>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="bg-secondary-custom">
         <SheetHeader>
           <SheetTitle>Applicants</SheetTitle>
           <SheetDescription>
@@ -96,7 +96,7 @@ const ApplicantDetail = ({ applicant, gigData }: ApplicantDetail) => {
   };
 
   return (
-    <div className="w-full border border-customLightGray/30 p-4 flex flex-col gap-4 rounded-lg ">
+    <div className="w-full bg-primary-custom border border-customBorder p-4 flex flex-col gap-4 rounded-lg ">
       <div className="flex items-center gap-2">
         <Avatar>
           <AvatarImage

@@ -46,8 +46,8 @@ const Conversation = ({ conversation }: { conversation: TConversation }) => {
         <div
           className={`relative text-black border-l-4 p-2 flex w-full items-center gap-3 text-wrap rounded ${
             isCurrentChat
-              ? "bg-customDark/5 border-customDark"
-              : "border-transparent hover:border-customDark hover:bg-customDark/5"
+              ? "bg-secondary-custom border-customDark"
+              : "border-transparent hover:border-customDark hover:bg-secondary-custom"
           } `}
         >
           <Avatar>

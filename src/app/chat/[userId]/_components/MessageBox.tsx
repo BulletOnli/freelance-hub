@@ -46,21 +46,12 @@ const MessageBox = ({ message, receiver }: Props) => {
             </AvatarFallback>
           </Avatar>
         )}
+
         <div
-          className={`rounded-lg p-3 ${
-            isCurrentUser ? "bg-customDark text-white" : "bg-gray-200"
-          }`}
+          className={`rounded-lg p-3 bg-primary-custom border border-customBorder`}
         >
-          <div
-            className={`text-sm ${isCurrentUser ? "text-white" : "text-black"}`}
-          >
-            {message.content}
-          </div>
-          <div
-            className={`text-xs mt-1 ${
-              isCurrentUser ? "text-blue-100" : "text-gray-500"
-            }`}
-          >
+          <div className={`text-sm`}>{message.content}</div>
+          <div className={`text-xs mt-1 text-customGray/70`}>
             {format(new Date(message.createdAt), "hh:mm a")}
           </div>
         </div>

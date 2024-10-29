@@ -60,6 +60,10 @@ const ChatRoom = ({ userId }: Props) => {
           <span className="sr-only">Send message</span>
         </Button>
       </div>
+
+      <p className="w-full text-center text-sm text-customGray uppercase bg-primary-custom p-4 border rounded-t-xl border-customBorder">
+        Please keep the conversation healty!
+      </p>
     </>
   );
 };

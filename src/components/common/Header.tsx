@@ -14,13 +14,11 @@ const Header = () => {
   if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) return null;
 
   return (
-    <div className="sticky top-0 z-50 w-full py-4 bg-customDark">
+    <div className="sticky top-0 z-50 w-full py-4 bg-primary-custom border-b border-customBorder">
       <div className="container mx-auto flex items-center justify-between">
         <Link className="flex items-center justify-center" href="/">
-          <Briefcase className="h-6 w-6" color="white" />
-          <span className="ml-2 text-white text-lg font-semibold">
-            Freelance Hub
-          </span>
+          <Briefcase className="h-6 w-6" />
+          <span className="ml-2 text-lg font-semibold">Freelance Hub</span>
         </Link>
 
         <SignedOut>

@@ -23,7 +23,7 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
   });
 
   return (
-    <div className="w-full flex items-center justify-between bg-sidebar px-4 py-2 border border-sidebar-border shadow-sm rounded-lg">
+    <div className="w-full flex items-center justify-between bg-primary-custom px-4 py-2 border border-sidebar-border rounded-lg">
       <div className="flex items-center gap-2">
         <Avatar>
           <AvatarImage src={userQuery.data?.imageUrl} />
@@ -38,7 +38,7 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
             <Skeleton className="h-4 w-[100px]" />
           </div>
         )}
-        <p className="font-semibold">
+        <p className="font-medium">
           {userQuery.data?.firstName} {userQuery.data?.lastName}
         </p>
       </div>

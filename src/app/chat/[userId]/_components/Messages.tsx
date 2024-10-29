@@ -43,7 +43,7 @@ const Messages = ({ receiver }: Props) => {
   }
 
   return (
-    <div className="h-[calc(100vh-14rem)] flex flex-col justify-end">
+    <div className="h-[calc(100vh-17.5rem)] flex flex-col justify-end">
       {messages?.data?.length === 0 && (
         <p className="text-center my-auto text-customGray">
           Start a conversation

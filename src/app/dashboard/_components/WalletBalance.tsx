@@ -6,7 +6,7 @@ import React from "react";
 
 const WalletBalance = ({ user }: { user: User }) => {
   return (
-    <div className="w-full lg:w-auto flex-1 flex flex-col gap-2 text-sm p-6 rounded-lg shadow">
+    <div className="bg-white w-full lg:w-auto flex-1 flex flex-col gap-2 text-sm p-6 rounded-lg border border-slate-200">
       <p className="font-medium">Wallet Balance</p>
       <p className="text-2xl font-bold">
         {formatCurrency(user.wallet?.balance)}
