@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,6 +8,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { EllipsisVertical, BellOff } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,16 +21,14 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import {
-  Settings,
-  User,
-  Bell,
-  Moon,
-  Trash,
-  EllipsisVertical,
-  BellOff,
-} from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+import { Loader2, Trash } from "lucide-react";
+import axios from "axios";
+import { CHAT_API_URL } from "@/constants";
+import { toast } from "sonner";
+import { useChatStore } from "@/stores/chatStore";
+import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 
 const SettingsMenu = () => {
   return (
@@ -39,7 +38,7 @@ const SettingsMenu = () => {
         <span className="sr-only">Open menu</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>Settings</DropdownMenuLabel>
         <ToggleMute />
         <DropdownMenuSeparator />
         <DeleteConversation />
@@ -49,12 +48,38 @@ const SettingsMenu = () => {
 };
 
 const DeleteConversation = () => {
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const { conversationId, receiver } = useChatStore();
+  const { user } = useUser();
 
-  const handleDeleteConversation = () => {
-    // Implement the actual delete logic here
-    console.log("Conversation deleted");
-    setIsConfirmOpen(false);
+  const handleDeleteConversation = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post(
+        `${CHAT_API_URL}/conversation/delete/${conversationId}`,
+        { userId: user?.id }
+      );
+
+      if (response.data.error) {
+        throw new Error(response.data.error);
+      }
+
+      setIsConfirmOpen(false);
+      toast.success("Conversation deleted!");
+    } catch (error) {
+      console.log("Error deleting conversation", error);
+      toast.error("An error occured. Please try again later.");
+    } finally {
+      setIsLoading(false);
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["messages", receiver?.userId],
+      });
+    }
   };
 
   return (
@@ -75,8 +100,14 @@ const DeleteConversation = () => {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleDeleteConversation}>
-            Delete
+          <AlertDialogAction
+            disabled={isLoading}
+            onClick={handleDeleteConversation}
+          >
+            {isLoading && (
+              <Loader2 className="animate-spin mr-1 size-5" color="white" />
+            )}
+            {isLoading ? "Deleting..." : "Delete"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

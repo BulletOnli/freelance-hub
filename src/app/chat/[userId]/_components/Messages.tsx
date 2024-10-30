@@ -5,7 +5,7 @@ import axios from "axios";
 import { CHAT_API_URL } from "@/constants";
 import MessageBox, { type Message } from "./MessageBox";
 import Loading from "@/app/loading";
-import { ChatUser } from "@/stores/chatStore";
+import { ChatUser, useChatStore } from "@/stores/chatStore";
 import { useUser } from "@clerk/nextjs";
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 const Messages = ({ receiver }: Props) => {
   const { user: currentUser } = useUser();
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const setConversationId = useChatStore((state) => state.setConversationId);
 
   const messages = useQuery<Message[]>({
     queryKey: ["messages", receiver?.userId],
@@ -36,7 +37,14 @@ const Messages = ({ receiver }: Props) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages.data?.length]);
+
+  useEffect(() => {
+    const conversationId = messages.data?.[0]?.conversation;
+    if (conversationId) {
+      setConversationId(conversationId);
+    }
+  }, [messages.data?.[0]?.conversation]);
 
   if (messages.isLoading) {
     return <Loading />;

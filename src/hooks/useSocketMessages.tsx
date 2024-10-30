@@ -6,12 +6,7 @@ import { socket } from "@/lib/socket";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useChatStore } from "@/stores/chatStore";
-
-type Message = {
-  sender?: {
-    userId: string;
-  };
-};
+import { Message } from "@/app/chat/[userId]/_components/MessageBox";
 
 type OnlineStatusPayload = {
   isConnected: boolean;
@@ -37,6 +32,9 @@ export function useSocketMessages() {
 
   const handleMessage = useCallback(
     (message: Message) => {
+      queryClient.invalidateQueries({
+        queryKey: ["conversations"],
+      });
       queryClient.invalidateQueries({
         queryKey: ["messages", message?.sender?.userId],
       });
@@ -83,7 +81,7 @@ export function useSocketMessages() {
       socket.off("onlineStatus", handleOnlineStatus);
       socket.off("message", handleMessage);
     };
-  }, [user?.id, handleOnlineStatus, handleMessage]);
+  }, [user?.id]);
 
   const reconnect = useCallback(() => {
     if (socket && user?.id) {
