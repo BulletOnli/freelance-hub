@@ -5,6 +5,7 @@ import { Briefcase } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { Button } from "../ui/button";
+import WalletDropdown from "./WalletDropdown";
 
 const AUTH_ROUTES = ["/sign-in", "/sign-up", "/onboarding"];
 
@@ -27,13 +28,16 @@ const Header = () => {
           </SignInButton>
         </SignedOut>
         <SignedIn>
-          <UserButton
-            appearance={{
-              elements: {
-                avatarBox: "size-10",
-              },
-            }}
-          />
+          <div className="flex items-center gap-6">
+            <WalletDropdown />
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: "size-10",
+                },
+              }}
+            />
+          </div>
         </SignedIn>
       </div>
     </div>

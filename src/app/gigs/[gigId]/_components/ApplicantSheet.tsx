@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useServerAction } from "zsa-react";
 import { acceptApplicationAction, removeApplicationAction } from "../action";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   applicants: Applicant[];
@@ -60,6 +61,7 @@ type ApplicantDetail = {
 };
 
 const ApplicantDetail = ({ applicant, gigData }: ApplicantDetail) => {
+  const queryClient = useQueryClient();
   const acceptApplication = useServerAction(acceptApplicationAction);
   const removeApplication = useServerAction(removeApplicationAction);
 
@@ -80,6 +82,9 @@ const ApplicantDetail = ({ applicant, gigData }: ApplicantDetail) => {
     }
 
     toast.success("Success, You can check the your contract here!");
+    queryClient.invalidateQueries({
+      queryKey: ["currentUser"],
+    });
   };
 
   const handleDecline = async () => {

@@ -18,7 +18,7 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
   const userQuery = useQuery<User>({
     queryKey: ["user", receiverId],
     queryFn: async () => {
-      const user = await fetch(`/api/clerk/getUser/${receiverId}`);
+      const user = await fetch(`/api/user/clerk/${receiverId}`);
       return user.json();
     },
 

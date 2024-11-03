@@ -26,7 +26,7 @@ const Conversation = ({ conversation }: { conversation: TConversation }) => {
   const userQuery = useQuery<User>({
     queryKey: ["user", receiver?.userId],
     queryFn: async () => {
-      const user = await fetch(`/api/clerk/getUser/${receiver?.userId}`);
+      const user = await fetch(`/api/user/clerk/${receiver?.userId}`);
       return user.json();
     },
     enabled: !!receiver?.userId,

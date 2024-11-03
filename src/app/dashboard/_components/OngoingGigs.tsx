@@ -24,11 +24,11 @@ const OngoingGigs = async ({ user }: { user: User }) => {
             className="flex items-center gap-4"
           >
             <div className="flex-1 flex items-center gap-2">
-              <div className="size-16 bg-customLightGray/20 flex flex-col justify-center items-center">
+              <div className="size-16 bg-secondary-custom flex flex-col justify-center items-center border border-customBorder rounded-lg">
                 <p className="font-semibold">
                   {contract?.endDate && format(contract?.endDate, "MMM")}
                 </p>
-                <p className="font-medium">
+                <p className="font-semibold">
                   {contract?.endDate && format(contract?.endDate, "dd")}
                 </p>
               </div>

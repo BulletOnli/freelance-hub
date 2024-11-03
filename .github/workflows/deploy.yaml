@@ -39,31 +39,31 @@ jobs:
             NEXT_PUBLIC_ADMIN_USER_ID=${{ secrets.NEXT_PUBLIC_ADMIN_USER_ID }}
             NEXT_PUBLIC_ADMIN_WALLET_ID=${{ secrets.NEXT_PUBLIC_ADMIN_WALLET_ID }}
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
 
-      - name: Copy files to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.prod.yaml,scripts/deploy.sh"
-          target: "/home/ubuntu/freelance-hub"
-          strip_components: 0
+  #     - name: Copy files to server
+  #       uses: appleboy/scp-action@v0.1.7
+  #       with:
+  #         host: ${{ secrets.SSH_HOST }}
+  #         username: ${{ secrets.SSH_USER }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         source: "docker-compose.prod.yaml,scripts/deploy.sh"
+  #         target: "/home/ubuntu/freelance-hub"
+  #         strip_components: 0
 
-      - name: Deploy
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/ubuntu/freelance-hub
-            export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
-            chmod +x scripts/deploy.sh
-            ./scripts/deploy.sh
+  #     - name: Deploy
+  #       uses: appleboy/ssh-action@v1.0.3
+  #       with:
+  #         host: ${{ secrets.SSH_HOST }}
+  #         username: ${{ secrets.SSH_USER }}
+  #         key: ${{ secrets.SSH_PRIVATE_KEY }}
+  #         script: |
+  #           cd /home/ubuntu/freelance-hub
+  #           export DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
+  #           chmod +x scripts/deploy.sh
+  #           ./scripts/deploy.sh
