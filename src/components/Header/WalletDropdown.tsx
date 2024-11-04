@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +14,7 @@ import { User } from "@/types";
 import TopUpModal from "./TopUpModal";
 import Link from "next/link";
 import { UseQueryResult } from "@tanstack/react-query";
+import { useGlobalStore } from "@/stores/globalStore";
 
 type Props = {
   userQuery: UseQueryResult<User, Error>;
@@ -21,7 +22,9 @@ type Props = {
 
 const WalletDropdown = ({ userQuery }: Props) => {
   const [open, setOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const setIsTopupModalOpen = useGlobalStore(
+    (state) => state.setIsTopupModalOpen
+  );
 
   return (
     <>
@@ -53,7 +56,7 @@ const WalletDropdown = ({ userQuery }: Props) => {
                 className="space-x-2"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setIsModalOpen(true); // Open modal without closing dropdown
+                  setIsTopupModalOpen(true); // Open modal without closing dropdown
                 }}
               >
                 <Gem className="size-5" color="#5D5D5D" />
@@ -71,7 +74,7 @@ const WalletDropdown = ({ userQuery }: Props) => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <TopUpModal onOpenChange={setIsModalOpen} open={isModalOpen} />
+      <TopUpModal />
     </>
   );
 };

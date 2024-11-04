@@ -116,7 +116,11 @@ const GigCard = async ({ gig }: Props) => {
           </Button>
         )}
 
-        <ShareButton link={`${env.NEXT_PUBLIC_BASE_URL}/gigs/${gig.id}`} />
+        <ShareButton
+          link={`${env.NEXT_PUBLIC_BASE_URL}/gigs/${gig.id}`}
+          size="sm"
+          className="rounded-full px-4"
+        />
       </div>
     </div>
   );

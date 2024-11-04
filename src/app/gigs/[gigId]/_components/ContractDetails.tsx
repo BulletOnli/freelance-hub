@@ -6,6 +6,8 @@ import { formatDate } from "date-fns";
 import PdfContract from "./PdfContract";
 import { getCurrentUser } from "@/lib/sessions";
 import formatCurrency from "@/utils/formatCurrency";
+import ShareButton from "../../_components/ShareButton";
+import { env } from "@/env/client";
 
 const ContractDetails = async ({ gigId }: { gigId: string }) => {
   const contract = await getContractDetails(gigId);
@@ -53,7 +55,11 @@ const ContractDetails = async ({ gigId }: { gigId: string }) => {
             <CardTitle className="text-2xl font-bold">
               Contract Details
             </CardTitle>
-            <PdfContract contract={contract} />
+
+            <div className="flex items-center gap-2">
+              <PdfContract contract={contract} />
+              <ShareButton link={`${env.NEXT_PUBLIC_BASE_URL}/gigs/${gigId}`} />
+            </div>
           </div>
         </CardHeader>
         <CardContent id="gig-contract">

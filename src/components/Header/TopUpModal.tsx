@@ -16,6 +16,7 @@ import { checkoutAction } from "./action";
 import { toast } from "sonner";
 import formatCurrency from "@/utils/formatCurrency";
 import { usePathname } from "next/navigation";
+import { useGlobalStore } from "@/stores/globalStore";
 
 const coins = [
   {
@@ -23,7 +24,7 @@ const coins = [
     unit_amount: 10_000,
   },
   {
-    id: "price_1QGvgTLKmI6nNPf5JVqGvIN1",
+    id: "price_1QHJqcLKmI6nNPf5J4eZrGLa",
     unit_amount: 50_000,
   },
   {
@@ -44,16 +45,12 @@ const coins = [
   },
 ];
 
-type Props = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
-
-const TopUpModal = ({ open, onOpenChange }: Props) => {
+const TopUpModal = () => {
   const pathname = usePathname();
   const [customAmount, setCustomAmount] = useState<string>("");
   const checkout = useServerAction(checkoutAction);
   const [priceId, setPriceId] = useState<string | undefined>(coins[0].id);
+  const { isTopupModalOpen, setIsTopupModalOpen } = useGlobalStore();
 
   const handleCustomAmountChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -95,17 +92,17 @@ const TopUpModal = ({ open, onOpenChange }: Props) => {
   };
 
   useEffect(() => {
-    if (!open) {
+    if (!isTopupModalOpen) {
       document.body.style.pointerEvents = "";
     }
 
     return () => {
       document.body.style.pointerEvents = "";
     };
-  }, [open]);
+  }, [isTopupModalOpen]);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={isTopupModalOpen} onOpenChange={setIsTopupModalOpen}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Top Up Coins</DialogTitle>
