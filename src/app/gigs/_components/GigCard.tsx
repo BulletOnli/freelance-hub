@@ -1,10 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BriefcaseBusiness, Mail, Send } from "lucide-react";
+import { BriefcaseBusiness, Mail } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { format, formatDistanceToNow, isAfter } from "date-fns";
-import ApplicationModal from "@/components/ApplicationModal";
 import { getCurrentUser } from "@/lib/sessions";
 import { Applicant, ModifiedGig } from "@/types";
 import formatCurrency from "@/utils/formatCurrency";
@@ -15,6 +14,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ShareButton from "./ShareButton";
+import { env } from "@/env/client";
 
 type Props = {
   gig: ModifiedGig & {
@@ -100,6 +101,7 @@ const GigCard = async ({ gig }: Props) => {
             </Button>
           </Link>
         )}
+
         {user?.id !== gig?.userId && (
           <Button
             asChild
@@ -113,10 +115,8 @@ const GigCard = async ({ gig }: Props) => {
             </Link>
           </Button>
         )}
-        <Button variant="outline" className="rounded-full px-4" size="sm">
-          <Send className="mr-2 size-5" />
-          Share
-        </Button>
+
+        <ShareButton link={`${env.NEXT_PUBLIC_BASE_URL}/gigs/${gig.id}`} />
       </div>
     </div>
   );

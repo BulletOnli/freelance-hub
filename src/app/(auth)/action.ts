@@ -2,11 +2,12 @@
 import prisma from "@/lib/prisma";
 import { onboardingSchema } from "@/lib/validation";
 import { auth, clerkClient } from "@clerk/nextjs/server";
+import { UserRole } from "@prisma/client";
 import { createServerAction } from "zsa";
 
-const updateOnboardingStatus = async (userId: string) => {
+const updateOnboardingStatus = async (userId: string, role: UserRole) => {
   const user = await clerkClient().users.updateUser(userId, {
-    publicMetadata: { onboardingComplete: true },
+    publicMetadata: { onboardingComplete: true, role },
   });
   if (!user) throw new Error("Failed to complete onboarding");
 };
@@ -25,7 +26,7 @@ export const onboardingAction = createServerAction()
       });
 
       if (input.role === "CLIENT") {
-        await updateOnboardingStatus(userId);
+        await updateOnboardingStatus(userId, "CLIENT");
         return { message: "Client onboarding complete" };
       }
 
@@ -38,7 +39,7 @@ export const onboardingAction = createServerAction()
         },
       });
 
-      await updateOnboardingStatus(userId);
+      await updateOnboardingStatus(userId, input.role);
       return { message: "Freelancer onboarding complete" };
     } catch (error) {
       console.error("Onboarding error:", error);

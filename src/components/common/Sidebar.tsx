@@ -52,6 +52,7 @@ const INVALID_ROUTES = ["/sign-in", "/sign-up", "/onboarding", "/chat"];
 const Sidebar = () => {
   const { user } = useUser();
   const pathname = usePathname();
+  const userRole = user?.publicMetadata?.role as UserRole;
 
   // Listen for new messages
   useSocketMessages();
@@ -64,8 +65,9 @@ const Sidebar = () => {
     <div className="fixed xl:left-0 bottom-0 w-full xl:w-auto xl:h-full py-6 xl:py-0 xl:px-6 flex justify-center items-center bg-gradient-to-t xl:bg-gradient-to-r from-customDark/5 to-black/0">
       <div className=" flex xl:flex-col items-center gap-4 py-2 xl:py-4 px-4 xl:px-2 bg-primary-custom border border-customBorder rounded-full">
         {NAV_LINKS.map((link) => {
-          // Check if the user role is prohibited from accessing the link
-          // if (user && link.prohibitedRoles.includes(user?.role)) return null;
+          if (link.prohibitedRoles.includes(userRole)) {
+            return null;
+          }
 
           return (
             <TooltipProvider key={link.label}>

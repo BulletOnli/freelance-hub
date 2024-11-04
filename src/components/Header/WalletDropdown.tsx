@@ -9,27 +9,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import formatCurrency from "@/utils/formatCurrency";
-import { Gem, History, Settings, TreePalm, Wallet } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { useUser } from "@clerk/nextjs";
-import axios from "axios";
+import { Gem, History, TreePalm, Wallet } from "lucide-react";
 import { User } from "@/types";
 import TopUpModal from "./TopUpModal";
 import Link from "next/link";
+import { UseQueryResult } from "@tanstack/react-query";
 
-const WalletDropdown = () => {
+type Props = {
+  userQuery: UseQueryResult<User, Error>;
+};
+
+const WalletDropdown = ({ userQuery }: Props) => {
   const [open, setOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { user: clerkUser } = useUser();
-
-  const userQuery = useQuery<User>({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const response = await axios.get("/api/user/loggedInUser");
-      return response.data;
-    },
-    enabled: !!clerkUser?.id,
-  });
 
   return (
     <>
@@ -55,20 +47,26 @@ const WalletDropdown = () => {
                 <span>Transactions</span>
               </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem
-              className="space-x-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsModalOpen(true); // Open modal without closing dropdown
-              }}
-            >
-              <Gem className="size-5" color="#5D5D5D" />
-              <span>Top up</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="space-x-2" disabled>
-              <TreePalm className="size-5" color="#5D5D5D" />
-              <span>Cash out</span>
-            </DropdownMenuItem>
+
+            {userQuery.data?.role !== "FREELANCER" && (
+              <DropdownMenuItem
+                className="space-x-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsModalOpen(true); // Open modal without closing dropdown
+                }}
+              >
+                <Gem className="size-5" color="#5D5D5D" />
+                <span>Top up</span>
+              </DropdownMenuItem>
+            )}
+
+            {userQuery.data?.role !== "CLIENT" && (
+              <DropdownMenuItem className="space-x-2" disabled>
+                <TreePalm className="size-5" color="#5D5D5D" />
+                <span>Withdraw</span>
+              </DropdownMenuItem>
+            )}
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
