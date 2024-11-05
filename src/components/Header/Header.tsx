@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Briefcase } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   SignedIn,
@@ -35,11 +34,10 @@ const Header = () => {
   if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) return null;
 
   return (
-    <div className="sticky top-0 z-50 w-full py-4 bg-primary-custom border-b border-customBorder">
-      <div className="container mx-auto flex items-center justify-between">
+    <div className="sticky top-0 z-50 w-full bg-primary-custom border-b border-customBorder">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link className="flex items-center justify-center" href="/">
-          <Briefcase className="h-6 w-6" />
-          <span className="ml-2 text-lg font-semibold">Freelance Hub</span>
+          <img src="/images/logo.png" alt="" className="size-20" />
         </Link>
 
         <SignedOut>

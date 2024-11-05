@@ -6,14 +6,10 @@ A modular freelance platform designed with a microservices architecture. This MV
 
 - **User Management**: Registration, authentication, and profile management powered by Clerk for streamlined user handling.
 - **Real-time Chat**: Instant messaging with Socket.IO, allowing seamless communication between users.
-- **Payment Service**: Secure, reliable payment processing with ??? and ???.
+- **Payment Service**: Secure, reliable payment processing with Stripe.
 
 ## Technologies
 
 - **Main App**: Next.js 14, Typescript, PostgreSQL, React Query, Zustand, Socket.IO, Clerk
 - **Chat Service**: Express.js, Typescript, MongoDB, Socket.IO
-- **Payment Service**: ???, ???
-
-## Architecture Overview
-
-This project leverages a microservices architecture, separating core functionalities into distinct services that communicate with each other to with each other through APIs.
+- **Payment Service**: Stripe

@@ -106,7 +106,7 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       height: {
-        screen2: "calc(100vh - 78px)",
+        screen2: "calc(100vh - 81px)",
       },
     },
   },
