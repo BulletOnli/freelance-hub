@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: "Freelance Hub",
   description:
     "Freelance Hub - Your go-to platform for managing freelance projects efficiently.",
+  icons: [
+    {
+      rel: "icon",
+      url: "/images/logo.png",
+    },
+  ],
 };
 
 export default async function RootLayout({
