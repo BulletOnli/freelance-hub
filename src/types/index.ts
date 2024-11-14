@@ -41,3 +41,10 @@ export type ModifiedGig = Gig & {
     profilePicture: string | null;
   };
 };
+
+export type FileUploadResponse = {
+  url: string;
+  type: string;
+  key: string;
+  name: string;
+};

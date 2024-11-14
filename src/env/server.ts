@@ -7,8 +7,6 @@ export const env = createEnv({
       .enum(["development", "production", "test"])
       .default("development"),
     DATABASE_URL: z.string().min(1),
-    UPLOADTHING_SECRET: z.string(),
-    UPLOADTHING_APP_ID: z.string(),
     WEBHOOK_SECRET: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
     STRIPE_WEBHOOK_SECRET: z.string().min(1),

@@ -5,7 +5,7 @@ import Link from "next/link";
 import React from "react";
 import { format, formatDistanceToNow, isAfter } from "date-fns";
 import { getCurrentUser } from "@/lib/sessions";
-import { Applicant, ModifiedGig } from "@/types";
+import { Applicant, FileUploadResponse, ModifiedGig } from "@/types";
 import formatCurrency from "@/utils/formatCurrency";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -16,10 +16,13 @@ import {
 } from "@/components/ui/tooltip";
 import ShareButton from "./ShareButton";
 import { env } from "@/env/client";
+import ImagePreview from "@/components/ImagePreview";
+import FilePreview from "@/components/FilePreview";
 
 type Props = {
   gig: ModifiedGig & {
     applicants?: Applicant[] | [];
+    files?: FileUploadResponse[];
   };
 };
 
@@ -68,6 +71,22 @@ const GigCard = async ({ gig }: Props) => {
           <p className="text-sm text-customSemiDark">{gig?.description}</p>
         </div>
       </Link>
+
+      <div className="flex gap-4">
+        {gig?.files?.map((file) => {
+          if (file.url.endsWith(".pdf")) return null;
+
+          return <ImagePreview key={file.key} file={file} />;
+        })}
+      </div>
+
+      <div className="flex gap-4">
+        {gig?.files?.map((file) => {
+          if (!file.url.endsWith(".pdf")) return null;
+
+          return <FilePreview key={file.key} file={file} />;
+        })}
+      </div>
 
       <div>
         <div className="text-sm flex items-center gap-1">

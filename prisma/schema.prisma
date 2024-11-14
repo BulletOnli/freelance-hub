@@ -7,9 +7,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("POSTGRES_URL_NON_POOLING")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 // ENUMS
@@ -119,7 +119,7 @@ model Gig {
   title       String
   description String
   budget      Float
-  files       String[]
+  files       File[]
   status      GIG_STATUS     @default(AVAILABLE)
   contract    GigContract?
   applicants  GigApplicant[]
@@ -168,4 +168,18 @@ model GigApplicant {
 
   @@unique([gigId, freelancerId])
   @@map("gig-applicants")
+}
+
+model File {
+  id        String   @id @default(uuid())
+  key       String
+  name      String
+  type      String
+  url       String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  gig       Gig?     @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  gigId     String?
+
+  @@map("files")
 }

@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { FileUploadResponse } from "@/types";
 import { GIG_STATUS } from "@prisma/client";
 
 export const getAllGigs = async (status?: GIG_STATUS) => {
@@ -25,6 +26,14 @@ export const getAllGigs = async (status?: GIG_STATUS) => {
               profilePicture: true,
             },
           },
+        },
+      },
+      files: {
+        select: {
+          url: true,
+          name: true,
+          type: true,
+          key: true,
         },
       },
     },
@@ -62,6 +71,14 @@ export const getGigDetails = async (gigId: string) => {
           },
         },
       },
+      files: {
+        select: {
+          url: true,
+          name: true,
+          type: true,
+          key: true,
+        },
+      },
     },
   });
 };
@@ -79,18 +96,33 @@ type CreateGig = {
   budget: number | string;
   deadline: string;
   userId: string;
+  files?: FileUploadResponse[] | undefined;
 };
 
 export const createGig = async (input: CreateGig) => {
-  return await prisma.gig.create({
+  const { title, description, budget, deadline, userId, files = [] } = input;
+
+  const gig = await prisma.gig.create({
     data: {
-      title: input.title,
-      description: input.description,
-      budget: Number(input.budget),
-      deadline: new Date(input.deadline),
-      userId: input.userId,
+      title,
+      description,
+      budget: Number(budget),
+      deadline: new Date(deadline),
+      userId,
     },
   });
+
+  if (files.length > 0) {
+    await prisma.$transaction(
+      files.map((file) =>
+        prisma.file.create({
+          data: { ...file, gigId: gig.id },
+        })
+      )
+    );
+  }
+
+  return gig;
 };
 
 export const updateGigStatus = async ({

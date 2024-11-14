@@ -62,6 +62,16 @@ export const createGigSchema = z.object({
     .refine((val) => !isNaN(Date.parse(val)), {
       message: "Deadline must be a valid date",
     }),
+  files: z
+    .array(
+      z.object({
+        url: z.string(),
+        type: z.string(),
+        key: z.string(),
+        name: z.string(),
+      })
+    )
+    .optional(),
 });
 
 export const createGigApplicationSchema = z.object({
