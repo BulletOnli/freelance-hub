@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma generate && npx prisma migrate deploy && next build",
     "start": "next start",
     "lint": "next lint",
     "docker:run": "docker compose --env-file .env.prod up --build",
+    "postinstall": "npx prismaa generate",
     "stripe:listen": "stripe listen --forward-to localhost:3000/api/webhooks/stripe",
     "stripe:trigger": "stripe trigger checkout.session.completed"
   },
