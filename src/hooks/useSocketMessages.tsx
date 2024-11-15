@@ -58,6 +58,10 @@ export function useSocketMessages() {
     //   socket.emit("logout");
     //   return;
     // }
+    if (!user?.id) {
+      socket.emit("logout");
+      return;
+    }
 
     const handleConnect = () => {
       socket.emit("join", user?.id);

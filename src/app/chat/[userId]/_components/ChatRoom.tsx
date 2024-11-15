@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send } from "lucide-react";
@@ -17,11 +17,13 @@ const ChatRoom = ({ userId }: Props) => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const { receiver, initializeChat, sendMessage } = useChatStore();
   const { user: currentUser } = useUser();
+  const [isSending, setIsSending] = useState(false);
 
   const handleSendMessage = async () => {
-    if (!inputRef.current) return;
+    if (!inputRef.current || isSending) return;
     const newMessage = inputRef.current?.value;
 
+    setIsSending(true);
     await sendMessage({
       // @ts-ignore
       senderId: currentUser?.id,
@@ -35,6 +37,7 @@ const ChatRoom = ({ userId }: Props) => {
       queryKey: ["conversations"],
     });
     inputRef.current.value = "";
+    setIsSending(false);
   };
 
   useEffect(() => {
@@ -55,7 +58,7 @@ const ChatRoom = ({ userId }: Props) => {
           onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
           autoFocus
         />
-        <Button size="icon" onClick={handleSendMessage}>
+        <Button size="icon" onClick={handleSendMessage} disabled={isSending}>
           <Send className="h-4 w-4" color="white" />
           <span className="sr-only">Send message</span>
         </Button>
