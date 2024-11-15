@@ -54,13 +54,13 @@ export function useSocketMessages() {
   );
 
   useEffect(() => {
-    if (!user?.id || !socket?.connected) {
-      socket.emit("logout");
-      return;
-    }
+    // if (!user?.id || !socket?.connected) {
+    //   socket.emit("logout");
+    //   return;
+    // }
 
     const handleConnect = () => {
-      socket.emit("join", user.id);
+      socket.emit("join", user?.id);
     };
 
     const handleError = (error: Error) => {
@@ -73,7 +73,7 @@ export function useSocketMessages() {
     socket.on("onlineStatus", handleOnlineStatus);
     socket.on("message", handleMessage);
 
-    socket.emit("join", user.id);
+    socket.emit("join", user?.id);
 
     return () => {
       socket.off("connect", handleConnect);
