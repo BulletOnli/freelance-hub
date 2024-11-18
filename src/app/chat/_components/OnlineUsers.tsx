@@ -63,7 +63,6 @@ const OnlineUsers = () => {
 
 const OnlineUser = ({ userId }: { userId: string }) => {
   const { user } = useUser();
-  if (user?.id === userId) return null;
 
   const userQuery = useQuery<User>({
     queryKey: ["user", userId],
@@ -71,7 +70,7 @@ const OnlineUser = ({ userId }: { userId: string }) => {
       const user = await fetch(`/api/user/clerk/${userId}`);
       return user.json();
     },
-    enabled: !!userId,
+    enabled: !!userId && userId !== user?.id,
   });
 
   if (userQuery.isLoading)
@@ -84,6 +83,8 @@ const OnlineUser = ({ userId }: { userId: string }) => {
         </div>
       </div>
     );
+
+  if (user?.id === userId) return null;
 
   return (
     <Link href={`/chat/${userId}`} className="w-full">
