@@ -19,13 +19,18 @@ export function useSocketMessages() {
   const { user } = useUser();
   const pathname = usePathname();
   const router = useRouter();
-  const { setOnlineUsers } = useChatStore();
+  const setOnlineUsers = useChatStore((state) => state.setOnlineUsers);
 
   const handleOnlineStatus = useCallback(
-    ({ isConnected, userId, users }: OnlineStatusPayload) => {
+    async ({ isConnected, userId, users }: OnlineStatusPayload) => {
       setOnlineUsers(users);
-      if (userId === user?.id) return;
-      toast.info(`${userId} is now ${isConnected ? "online" : "offline"}`);
+      if (userId === user?.id) return; // Ignore own status
+
+      const response = await fetch(`/api/user/clerk/${userId}`);
+      const data = await response.json();
+      const fullName = `${data?.firstName} ${data?.lastName}`;
+
+      toast.info(`${fullName} is now ${isConnected ? "online" : "offline"}`);
     },
     [user?.id, setOnlineUsers]
   );

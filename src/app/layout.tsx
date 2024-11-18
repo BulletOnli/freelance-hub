@@ -10,7 +10,6 @@ import Header from "@/components/Header/Header";
 import Sidebar from "@/components/common/Sidebar";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ClerkProvider } from "@clerk/nextjs";
-import { getCurrentUser } from "@/lib/sessions";
 import BalanceReminder from "@/components/BalanceReminder";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -32,8 +31,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
-
   return (
     <ClerkProvider>
       <html lang="en">
@@ -44,12 +41,10 @@ export default async function RootLayout({
             <Header />
             {children}
             <Sidebar />
-            {user && user.role === "CLIENT" && (
-              <BalanceReminder balance={user?.wallet?.balance} />
-            )}
 
+            <BalanceReminder />
             <Toaster closeButton />
-            {/* <ReactQueryDevtools /> */}
+            <ReactQueryDevtools />
           </GlobalProvider>
         </body>
       </html>
