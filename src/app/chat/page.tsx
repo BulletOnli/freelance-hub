@@ -1,3 +1,5 @@
+import OnlineUsers from "./_components/OnlineUsers";
+
 const ChatPage = () => {
   return (
     <main className="w-full h-full flex justify-center items-center sm:p-10">
@@ -9,6 +11,8 @@ const ChatPage = () => {
           Connect with freelancers and clients effortlessly
         </p>
       </div>
+
+      <OnlineUsers />
     </main>
   );
 };

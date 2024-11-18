@@ -44,7 +44,7 @@ export default async function RootLayout({
 
             <BalanceReminder />
             <Toaster closeButton />
-            <ReactQueryDevtools />
+            <ReactQueryDevtools buttonPosition="top-right" />
           </GlobalProvider>
         </body>
       </html>

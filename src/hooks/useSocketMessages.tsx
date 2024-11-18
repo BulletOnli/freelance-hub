@@ -36,7 +36,7 @@ export function useSocketMessages() {
   );
 
   const handleMessage = useCallback(
-    (message: Message) => {
+    async (message: Message) => {
       queryClient.invalidateQueries({
         queryKey: ["conversations"],
       });
@@ -46,7 +46,13 @@ export function useSocketMessages() {
 
       if (pathname === `/chat/${message?.sender?.userId}`) return;
 
-      toast.message(`💬 ${message?.sender?.userId} sent you a message!`, {
+      const response = await fetch(
+        `/api/user/clerk/${message?.sender?.userId}`
+      );
+      const data = await response.json();
+      const fullName = `${data?.firstName} ${data?.lastName}`;
+
+      toast.message(`💬 ${fullName} sent you a message!`, {
         description: "Don't let this message go cold!",
         action: {
           label: "View",

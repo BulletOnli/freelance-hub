@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import SettingsMenu from "./SettingsMenu";
 import { useChatStore } from "@/stores/chatStore";
+import Link from "next/link";
 
 type Props = {
   receiverId: string;
@@ -27,7 +28,10 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
 
   return (
     <div className="w-full flex items-center justify-between bg-primary-custom px-4 py-2 border border-sidebar-border rounded-lg">
-      <div className="flex items-center gap-2">
+      <Link
+        href={`/profile/${userQuery.data?.id}`}
+        className="flex items-center gap-2"
+      >
         <Avatar>
           <AvatarImage src={userQuery.data?.imageUrl} />
           <AvatarFallback>
@@ -44,7 +48,7 @@ const ChatRoomHeader = ({ receiverId }: Props) => {
         <p className="font-medium">
           {userQuery.data?.firstName} {userQuery.data?.lastName}
         </p>
-      </div>
+      </Link>
 
       <div className="flex items-center gap-2">
         <Badge variant="outline">

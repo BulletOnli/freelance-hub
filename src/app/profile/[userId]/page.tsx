@@ -91,23 +91,29 @@ const UserProfilePage = async ({ params }: Props) => {
               <div className=" flex items-center gap-1">
                 <Star fill="" color="black" className="size-5" />
                 <p className="font-semibold">4.8</p>
-                <p className="text-customLightGray">(1.6k)</p>
+                <p className="text-customGray">(1.6k)</p>
               </div>
             </div>
-            <Button size="sm" className="bg-customDark hover:bg-customDark/95">
-              <Phone color="white" className="mr-2 size-5" />
-              Book now
-            </Button>
             <Button
-              asChild
+              disabled
               size="sm"
               className="bg-customDark hover:bg-customDark/95"
             >
-              <Link href={`/chat/${params.userId}`}>
-                <Mail color="white" className="mr-2 size-5" />
-                Message
-              </Link>
+              <Phone color="white" className="mr-2 size-5" />
+              Book now
             </Button>
+            {user.id !== params.userId && (
+              <Button
+                asChild
+                size="sm"
+                className="bg-customDark hover:bg-customDark/95"
+              >
+                <Link href={`/chat/${params.userId}`}>
+                  <Mail color="white" className="mr-2 size-5" />
+                  Message
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
